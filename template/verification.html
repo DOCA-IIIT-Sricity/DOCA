@@ -1,0 +1,190 @@
+<!document html>
+{%load static%}
+<html>
+<head>
+    <meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">	
+	<link rel="icon" type="image/png" href="{% static 'img/favicon.ico' %}"/> 
+	<link rel="stylesheet" type="text/css" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}"> 
+	<link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css"> 
+	<link rel="stylesheet" type="text/css" href="fonts/iconic/css/material-design-iconic-font.min.css"> 
+	<link rel="stylesheet" type="text/css" href="{% static 'vendor/animate/animate.css' %}"> 	
+	<link rel="stylesheet" type="text/css" href="{% static 'vendor/css-hamburgers/hamburgers.min.css' %}"> 
+	<link rel="stylesheet" type="text/css" href="{% static 'vendor/animsition/css/animsition.min.css' %}"> 
+	<link rel="stylesheet" type="text/css" href="{% static 'vendor/select2/select2.min.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'vendor/daterangepicker/daterangepicker.css' %}"> 
+	<link rel="stylesheet" type="text/css" href="{% static 'css/util.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+	<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic|Roboto+Mono:400,500|Material+Icons" rel="stylesheet">
+
+<style>
+body{
+    background-image:url("{% static 'img/home_background2.png' %}");
+    background-size: cover;
+}
+    
+.limiter{
+   
+    float:right;
+}
+.focus-input100{
+	top:50%;
+	height:50%;
+}
+.otp{
+    width:12%;
+    float:left;
+    margin:1%;
+}
+.input100{
+    padding:0;
+    text-align:center;
+    font-size:20px;
+}
+.button2{
+    font-size: 12px;
+    height: 30px;
+    text-transform: none;
+}
+
+.first{
+    margin-left:9%;
+}
+
+.label2{
+    font-size:16px;
+}
+.email{
+    color:blue;
+}
+</style>
+</head>
+<body>
+    </div class="continer">
+    <div class="row d-flex justify-content-end ">
+    <div class="col-md-6">
+
+    <div class="limiter" >
+		<div class="container-login100" style="background-image: url('images/bg-01.jpg');">
+			<div class="wrap-login100 p-l-55 p-r-55 p-t-65 p-b-54">
+				<form class="login100-form validate-form" method="post">
+					<span class="login100-form-title p-b-30">
+						Verify OTP
+					</span>
+                    {%csrf_token%}
+                    {% if err is not null %}
+						<span class ="login-form-title p-b-20" style="color:red">{{err}}<br><br></span>
+					{% endif %}
+                    <span class="label-input100 label2">We have sent otp to your email <span class="email">{{email}}</span></span>
+                    <br><br>
+                        
+                            <div class="wrap-input100 validate-input m-b-23 otp first">
+                                <input type="text" id="otp1" name="o1"
+                                onkeyup="if (this.value.length==1) document.getElementById('otp2').focus();" class="input100 otp2" maxlength="1">
+                            </div>
+                            
+                            <div class="wrap-input100 validate-input m-b-23 otp">
+                                <input type="text" id="otp2" name="o2"
+                                onkeydown="if(this.value.length==0 && event.keyCode == 8){document.getElementById('otp1').focus();document.getElementById('otp1').value='';}"  
+                                onkeyup="if (this.value.length==1) document.getElementById('otp3').focus();" class="input100 otp2" maxlength="1">
+                            </div>
+                            
+                            <div class="wrap-input100 validate-input m-b-23 otp">
+                                <input type="text" id="otp3" name="o3"
+                                onkeydown="if(this.value.length==0 && event.keyCode == 8){document.getElementById('otp2').focus();document.getElementById('otp2').value='';}" 
+                                onkeyup="if (this.value.length==1) document.getElementById('otp4').focus();" class="input100 otp2" maxlength="1">
+                            </div>
+                            
+                            <div class="wrap-input100 validate-input m-b-23 otp">
+                                <input type="text" id="otp4"  name="o4"
+                                onkeydown="if(this.value.length==0 && event.keyCode == 8){document.getElementById('otp3').focus();document.getElementById('otp3').value='';}"
+                                onkeyup="if (this.value.length==1) document.getElementById('otp5').focus();" class="input100 otp2" maxlength="1">
+                            </div>
+                            
+                            <div class="wrap-input100 validate-input m-b-23 otp">
+                                <input type="text" id="otp5" name="o5"
+                                onkeydown="if(this.value.length==0 && event.keyCode == 8){document.getElementById('otp4').focus();document.getElementById('otp4').value='';}"
+                                onkeyup="if (this.value.length==1) document.getElementById('otp6').focus();" class="input100 otp2" maxlength="1">
+                            </div>
+                            
+                            <div class="wrap-input100 validate-input m-b-23 otp">
+                                <input type="text" id="otp6" name="o6"
+                                onkeydown="if(this.value.length==0 && event.keyCode == 8){document.getElementById('otp5').focus();document.getElementById('otp5').value='';}"  
+                                class="input100 otp2" maxlength="1">
+                            </div>
+                            
+					
+                    <br>
+                    <br>
+					<br>
+                    <br>
+					<div class="container-login100-form-btn">
+						<div class="wrap-login100-form-btn">
+							<div class="login100-form-bgbtn"></div>
+							<button class="login100-form-btn">
+								Verify
+							</button>
+						</div>
+					</div>
+                    <br><br>
+                    <div>
+
+                        <div style="float:left"> Resend otp in </div>
+                        <div id="timeR" data-val="119" style="float:right"> 00:00</div>
+
+                    </div>
+
+					<div class="flex-col-c p-t-75">
+						<span class="txt1 p-b-17">
+							Or Login
+						</span>
+
+						<a href="#" class="txt2">
+							Login
+						</a>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+    </div></div>
+    <div>
+	
+
+	<div id="dropDownSelect1"></div>
+	<script src="{% static 'vendor/jquery/jquery-3.2.1.min.js' %}"></script>
+	<script src="{% static 'vendor/animsition/js/animsition.min.js' %}"></script>
+	<script src="{% static 'vendor/bootstrap/js/popper.js' %}"></script>
+	<script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+	<script src="{% static 'vendor/select2/select2.min.js' %}"></script>
+	<script src="{% static 'vendor/daterangepicker/moment.min.js' %}"></script>
+	<script src="{% static 'vendor/daterangepicker/daterangepicker.js' %}"></script>
+	<script src="{% static 'vendor/countdowntime/countdowntime.js' %}"></script>
+	<script src="{% static 'js/main.js' %}"></script>
+    
+    <script>
+        
+        var myVar = setInterval(myTimer, 2000);
+        function myTimer(){
+            var widget = document.getElementById("timeR");
+            var time = widget.dataset.val;
+            if (time == 0){
+                
+                widget.innerHTML ="<div class=\"container-login100-form-btn\"><div class=\"wrap-login100-form-btn\"><div class=\"login100-form-bgbtn\"></div><button class=\"login100-form-btn button2\">Resend</button></div></div>";
+                console.log("hello")
+                clearInterval(myVar);
+            }
+            else{
+            var sec = time % 60 > 9 ? ""+time % 60: "0"+time % 60;
+            var min = time > 59 ? "01" : "00";
+            widget.innerHTML = min+" : "+sec;
+            widget.dataset.val=time-1;
+            }
+        }
+
+        
+    </script>
+
+
+</body>
+</html>

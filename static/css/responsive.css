@@ -1,0 +1,193 @@
+/* Medium Layout: 1280px. */
+@media only screen and (min-width: 992px) and (max-width: 1200px) { 
+	.spinner{
+		left: 50%;
+		top: 25%;
+	}
+  	.responsive .slick-prev {
+		left: 10px;
+	}
+	.responsive .slick-next {
+		right: 10px;
+	}
+	.service-area {
+		padding: 18px;
+	}
+}
+/* Tablet Layout: 768px. */
+@media only screen and (min-width: 768px) and (max-width: 991px) { 
+	.spinner{
+		left: 50%;
+		top: 35%;
+	}
+	.medipath-title p {
+		padding: 0 17%;
+	}
+	.logo img {
+		width: 90px;
+	}
+	.main-menu li a {
+		padding: 20px 8px;
+	}
+	.responsive .slick-prev {
+		left: 10px;
+	}
+	.responsive .slick-next {
+		right: 10px;
+	}
+	.t-service-1,
+	.t-service-2,
+	.t-service-3{
+		margin-bottom: 60px;
+	}
+	.service-area {
+		margin-bottom: 60px;
+	}
+	.counticon h3{
+		font-size: 18px;
+	}
+	.medipath-details-img {
+		margin-top: 60px;
+	}
+	.d-tab .nav-tabs > li > a {
+		margin-right: 15px;
+	}
+	.testimonial-info {
+		left: 45%;
+	}
+	.w-bottom{
+		margin-bottom: 30px;
+	}
+	/*service-details*/
+	.open-hour{
+		margin-bottom: 40px;
+	}
+	/*single-blog.html*/
+	.single-comment:nth-child(2n+1){
+	    padding-left: 0px;
+	}
+	.comment-form{
+		margin-bottom: 60px;
+	}
+	/*contact.html*/
+	.contact-form{
+		margin-top: 60px;
+	}
+	/*Doctor-details.html*/
+	.doctor-info-area {
+		margin-bottom: 60px;
+	}
+}
+/* Mobile Layout: 320px. */
+@media only screen and (max-width: 767px) { 
+	.header-top{
+		display: none;
+	}
+	.medipath-title p{
+		padding: 0 6%;
+	}
+	.hero-area{
+	    padding-top:130px;
+	    padding-bottom: 100px;
+	}
+	.hero-text h1{
+	    font-size: 26px;
+	    margin-bottom: 0px;
+	}
+	.hero-text p{
+	    padding:0 7%;
+	}
+	.responsive .slick-next::before,
+	.responsive .slick-prev::before{
+		padding: 0px 10px; 
+	}
+	.responsive .slick-prev, 
+	.responsive .slick-next{
+	    width: 30px;
+	    height: 30px;
+	}
+	.responsive .slick-next {
+	    right: 0px;
+	}
+	.responsive .slick-prev {
+	    left: 0px;
+	}
+	.t-service-1,
+	.t-service-2,
+	.t-service-3{
+		margin-bottom: 40px;
+	}
+	.medipath-details-img {
+		margin-top: 40px;
+	}
+	.service-area {
+		margin-bottom: 40px;
+	}
+	.countdown {
+		margin-bottom: 40px;
+		text-align: center;
+		margin-top: 50px;
+	}
+	.counticon h3{
+		font-size: 18px;
+	}
+	.testimonial-info {
+		left: 45%;
+	}
+	.w-bottom{
+		margin-bottom: 30px;
+	}
+	.subcribe .medipath-btn {
+		bottom: 1px;
+	}
+	.footer-text{
+		text-align: center;
+	}
+	/*service-details*/
+	.open-hour{
+		margin-bottom: 40px;
+	}
+	/*our-gallery*/
+	.portfolio-button .medipath-btn {
+		margin-bottom: 20px;
+	}
+	/*single-blog.html*/
+	.comment-form{
+		margin-bottom: 60px;
+	}
+	.single-comment:nth-child(2n+1){
+	    padding-left: 0px;
+	}
+	/*contact.html*/
+	.contact-form{
+		margin-top: 40px;
+	}
+	/*Doctor-details.html*/
+	.doctor-info-area {
+		margin-bottom: 60px;
+	}
+	/*preloder*/
+	.hearbeat i{
+	    font-size: 32px;
+	    color: #1ED1C7;
+	}
+}
+/* Wide Mobile Layout: 480px. */
+@media only screen and (min-width: 480px) and (max-width: 767px) { 
+	.spinner{
+		left: 50%;
+		top: 40%;
+	}
+	.hero-area{
+	    padding-top:150px;
+	    padding-bottom: 120px;
+	}
+	.team-social > ul{
+		left: 30%;
+	}
+	.demo-box {
+		width: 380px;
+		margin-left: 0px;
+		margin: 0 auto;
+	}
+}
