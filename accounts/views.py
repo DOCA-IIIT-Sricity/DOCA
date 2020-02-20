@@ -18,6 +18,7 @@ def signup(request):
         if form.is_valid():
             
             
+            
         return render(request,'signup.html',{'error':'something went wrong'})
         
 def verifyotp(request):
