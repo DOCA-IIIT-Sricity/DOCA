@@ -11,3 +11,12 @@ class SignupForm(forms.Form):
     username = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput)
     email = forms.CharField()
+
+class OTPVerificationForm(forms.Form):
+    o1 = forms.CharField(max_length=1)
+    o2 = forms.CharField(max_length=1)
+    o3 = forms.CharField(max_length=1)
+    o4 = forms.CharField(max_length=1)
+    o5 = forms.CharField(max_length=1)
+    o6 = forms.CharField(max_length=1)
+
