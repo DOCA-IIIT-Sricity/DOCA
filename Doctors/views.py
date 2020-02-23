@@ -1,6 +1,10 @@
 from django.shortcuts import render
+from django.http import HttpResponse
+from accounts.decorators import isDoctor
 
-# Create your views here.
+@isDoctor(1)
+def home(request):
+    return HttpResponse("Welocome to Home")
 
 
 def apply(request):

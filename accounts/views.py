@@ -1,10 +1,11 @@
 from django.shortcuts import render
-from django.http import HttpResponse
-from .forms import LoginForm,SignupForm
+from django.http import HttpResponse, HttpResponseRedirect
+from .forms import LoginForm,SignupForm,OTPVerificationForm
 import boto3
 import hashlib
-import re
+from .verifylib import isValidEmail,isvalidPassword,isvalidUserName
 from boto3.dynamodb.conditions import Key, Attr
+from .decorators import is_authenticated_notverified
 
 db=boto3.resource('dynamodb')
 
@@ -25,22 +26,23 @@ def login(request):
                 )
                 password0 = response['Items'][0]['password']
                 if (password == password0):
+                    request.session['user']=user
                     return HttpResponse("<H1> LOGIN SUCESSFUL </H1>")
                 else:
                     print("hello")
-                    return render(request,'login.html',{"err":"Invalid Email address/UserName or Password","user":user})
+                    return render(request,'accounts/login.html',{"err":"Invalid Email address/UserName or Password","user":user})
             else :
                 
-                return render(request,'login.html',{"err":"Invalid Email address/UserName or Password"})
+                return render(request,'accounts/login.html',{"err":"Invalid Email address/UserName or Password"})
 
-        return render(request,'login.html')
+        return render(request,'accounts/login.html')
 
 
 
 
 def signup(request):
     if request.method == "GET":
-        return render(request,'signup.html')
+        return render(request,'accounts/signup.html')
 
     if request.method == "POST":
         form=SignupForm(request.POST)
@@ -72,27 +74,45 @@ def signup(request):
             print(username+"\t"+password+"\t"+email)
 
 
-        return render(request,'signup.html',{'error':'something went wrong'})
+        return render(request,'accounts/signup.html',{'error':'something went wrong'})
 
+@is_authenticated_notverified
 def verifyotp(request):
     if request.method == "GET":
-        return render(request,'verification.html')
+        return render(request,'accounts/verification.html')
+    if request.method == "POST" :
+        form = OTPVerificationForm(request.POST)
+        if form.is_valid():
+            generatedotp = form.cleaned_data['o1']+form.cleaned_data['o2']+form.cleaned_data['o3']+form.cleaned_data['o4']+form.cleaned_data['o5']+form.cleaned_data['o6']
+            generatedotp = hashlib.sha256(generatedotp.encode())
+            table = db.Table('otp')
+            user = request.session['user']
+            key = 'email' if isValidEmail(user) else 'username'
+            response = table.scan(
+                    FilterExpression=Attr(key).eq(user)
+            )
+            if response['Count']==1:
+                if response['Items'][0]['otp'] == generatedotp :
+                    table0 = db.Table('user')
+                    table.update_item(
+                        Key={
+                            key : user,
+                        },
+                        UpdateExpression='SET isVerified = :val1',
+                        ExpressionAttributeValues={
+                            ':val1': 1
+                        }
+                    )
+                    return HttpResponseRedirect('/acounts/login/')
+                return render(request, 'accounts/verification.html',{'err':'OTP not match'})
+            return HttpResponseRedirect('/accounts/login/')
+
+
+
+
 
 def forgot(request):
     if request.method == "GET":
-        return render(request,'forgot_password.html')
-
-def isvalidUserName(username):
-    if len(username) < 6 or len(username)>25:
-        return False
-    return True
+        return render(request,'accounts/forgot_password.html')
 
 
-def isvalidPassword(password):
-    if len(password) < 8 or len(password)>25:
-        return False
-    if(bool(re.match('((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,30})',password))==True):
-        return False
-    return True
-def isValidEmail(email):
-    return re.search('^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$',email)
