@@ -30,19 +30,19 @@ def login(request):
                     return HttpResponse("<H1> LOGIN SUCESSFUL </H1>")
                 else:
                     print("hello")
-                    return render(request,'login.html',{"err":"Invalid Email address/UserName or Password","user":user})
+                    return render(request,'accounts/login.html',{"err":"Invalid Email address/UserName or Password","user":user})
             else :
                 
-                return render(request,'login.html',{"err":"Invalid Email address/UserName or Password"})
+                return render(request,'accounts/login.html',{"err":"Invalid Email address/UserName or Password"})
 
-        return render(request,'login.html')
+        return render(request,'accounts/login.html')
 
 
 
 
 def signup(request):
     if request.method == "GET":
-        return render(request,'signup.html')
+        return render(request,'accounts/signup.html')
 
     if request.method == "POST":
         form=SignupForm(request.POST)
@@ -74,12 +74,12 @@ def signup(request):
             print(username+"\t"+password+"\t"+email)
 
 
-        return render(request,'signup.html',{'error':'something went wrong'})
+        return render(request,'accounts/signup.html',{'error':'something went wrong'})
 
 @is_authenticated_notverified
 def verifyotp(request):
     if request.method == "GET":
-        return render(request,'verification.html')
+        return render(request,'accounts/verification.html')
     if request.method == "POST" :
         form = OTPVerificationForm(request.POST)
         if form.is_valid():
@@ -104,7 +104,7 @@ def verifyotp(request):
                         }
                     )
                     return HttpResponseRedirect('/acounts/login/')
-                return render(request, 'verification.html',{'err':'OTP not match'})
+                return render(request, 'accounts/verification.html',{'err':'OTP not match'})
             return HttpResponseRedirect('/accounts/login/')
 
 
@@ -113,6 +113,6 @@ def verifyotp(request):
 
 def forgot(request):
     if request.method == "GET":
-        return render(request,'forgot_password.html')
+        return render(request,'accounts/forgot_password.html')
 
 
