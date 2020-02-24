@@ -5,15 +5,16 @@ import boto3
 import hashlib
 from .verifylib import isValidEmail,isvalidPassword,isvalidUserName
 from boto3.dynamodb.conditions import Key, Attr
-from .decorators import is_authenticated_notverified
+from .decorators import is_authenticated_notverified,is_not_authenticated
 from doca.settings import SECRET_KEY
 from datetime import datetime
 
 db=boto3.resource('dynamodb')
 
+@is_not_authenticated
 def login(request):
     if request.method == "GET" :
-        return render(request,'login.html')
+        return render(request,'accounts/login.html')
     if request.method == "POST":
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -26,14 +27,24 @@ def login(request):
                 response = table.scan(
                     FilterExpression=Attr('email').eq(user)
                 )
+                if response['Count']==0:
+                    print("LOL")
+                    return render(request,'accounts/login.html',{"err":"Invalid Email address/UserName or Password","user":user})
+                
                 password0 = response['Items'][0]['password']
                 if (password == password0):
-                    request.session['email'] = response['Items'][0]['email']
-                    request.session['valid'] = datetime.timestamp
-                    request.session['isDoctor'] = response['Items'][0]['isDoctor'] if 'isDoctor' in response['Items'][0] else 0
-                    request.session['signature'] =hashlib.sha256((request.session['email']+request.session['isDoctor']+request.session['valid'] + SECRET_KEY).decode())
-
-                    return HttpResponse("<H1> LOGIN SUCESSFUL </H1>")
+                    if response['Items'][0]['isVerified'] == 0 :
+                        return HttpResponseRedirect('/accounts/verifyotp/')
+                    request.session['email'] = email0 = response['Items'][0]['email']
+                    request.session['valid'] = timestamp0 = str(datetime.timestamp)
+                    isDoctor = response['Items'][0]['isDoctor'] if 'isDoctor' in response['Items'][0] else 0
+                    request.session['isDoctor'] =isDoctor
+                    tkey =email0 + str(isDoctor)+ str(timestamp0) + SECRET_KEY
+                    request.session['signature0']  = str(hashlib.sha256(tkey.encode()).hexdigest())
+                    if request.session['isDoctor'] == 0 :
+                        return HttpResponse("<H1> Patient HomePage </H1>")
+                    return HttpResponse("<H1> Doctor HomePage </H1>")
+                    
                 else:
                     return render(request,'accounts/login.html',{"err":"Invalid Email address/UserName or Password","user":user})
             else :
@@ -44,7 +55,7 @@ def login(request):
 
 
 
-
+@is_not_authenticated
 def signup(request):
     if request.method == "GET":
         return render(request,'accounts/signup.html')
@@ -115,7 +126,7 @@ def verifyotp(request):
 
 
 
-
+@is_not_authenticated
 def forgot(request):
     if request.method == "GET":
         return render(request,'accounts/forgot_password.html')
