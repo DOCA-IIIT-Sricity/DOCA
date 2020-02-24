@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            /* .data1{ height : 300px; } */
+            tb,th,td,table { border : 1px solid }
+
+            /* .filter{
+                background-color: aqua;
+                float : left;
+                width : 40px;
+                box-shadow : 2px 2px;
+            } */
+            .filter {
+                display:inline-block;
+                color:#444;
+                border:1px solid #CCC;
+                background:#DDD;
+                box-shadow: 0 0 5px -1px rgba(0,0,0,0.2);
+                cursor:pointer;
+                vertical-align:middle;
+                max-width: 100px;
+                padding: 5px;
+                text-align: center;
+            }
+            .filter:active {
+                color:red;
+                box-shadow: 0 0 5px -1px rgba(0,0,0,0.6);
+            }
+        </style>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    </head>
+    
+<body class="jumbotron">
+    <form method = "POST" action = "am/">
+        {% csrf_token %}<div>
+        Symptoms : 
+        <input type="text" id = "symptoms" name="symptom">
+        <button type="button" onclick="addsymp()">add</button> </div>
+        <div id="displaysym"></div>
+        Notes : 
+        <input type="textarea">
+        <hr>
+        <div class="w3-container">
+  
+            <button type="button" onclick="document.getElementById('id01').style.display='block'" class="w3-button w3-black">Open Modal</button>
+          
+
+
+
+
+
+
+        <table id="myTable">
+        </table>
+        <button type="submit">submit</button>
+    </form>
+
+    <div id="id01" class="w3-modal">
+        <form name="addmed">
+            {% csrf_token %}
+            <div class="w3-modal-content">
+                <header class="w3-container"> 
+                <span onclick="document.getElementById('id01').style.display='none'" 
+                class="w3-button w3-display-topright">&times;</span>
+                    medicine<br>
+                    <input type="text" name = 'tab' id="tabname">
+                    <br>dosage<br>
+                    <input type="text" name = 'dos' id="dose">
+                    <br>frequency<br>
+                    <input type="text" name="frequency" id="freq">
+                    <br>note<br>
+                    <input type="text" name="note" id="note">
+                    <button type="button" onclick = "saving()">add medication</button>
+            </div>
+        </form>
+    </div>
+  </div>
+
+  <script>
+    function saving(){
+        console.log($('#tabname').val())
+        $.ajax({
+        url: "am/",
+        method: "POST",
+        data: {
+            tab : $('#tabname').val(),
+            dosage : $('#dose').val(),
+            frequency : $('#freq').val(),
+            note : $('#note').val(),
+            csrfmiddlewaretoken :$('input[name=csrfmiddlewaretoken]').val()
+        },
+        
+        });
+        document.getElementById('id01').style.display='none'
+        addrow();
+        document.addmed.reset()
+    }
+    function addrow() {
+        console.log("in function")
+        var table = document.getElementById("myTable");
+        var row = table.insertRow(-1);
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        var cell3 = row.insertCell(2);
+        var cell4 = row.insertCell(3);
+        cell1.innerHTML = document.addmed.tab.value;
+        cell2.innerHTML = document.addmed.dos.value;
+        cell3.innerHTML = document.addmed.frequency.value;
+        cell4.innerHTML = document.addmed.note.value;
+        }
+
+
+    var symptom_list = [];
+    var div_count = 0;
+
+    function addsymp(){
+        console.log($("#symptoms").val());
+        console.log(symptom_list);
+        var symptom = $("#symptoms").val();
+        symptom_list.push(symptom)
+
+        $('<div/>', {
+       id:   'div' + div_count++
+    }).append('<div class="filter" onclick="removesymp(this);">'+symptom_list[symptom_list.length-1]+'</div>').appendTo($('#displaysym'));
+    }
+
+    function removesymp(elem){
+        var div = document.getElementById(elem.parentNode.id);
+        var sudharshan = div.firstElementChild.innerHTML;
+        var index = symptom_list.findIndex(function(item) {return item == sudharshan})
+        symptom_list.splice(index, 1)
+        div.remove();
+    }
+  </script>
+
+    
+</body>
+</html>
