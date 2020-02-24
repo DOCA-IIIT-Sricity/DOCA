@@ -6,6 +6,8 @@ import hashlib
 from .verifylib import isValidEmail,isvalidPassword,isvalidUserName
 from boto3.dynamodb.conditions import Key, Attr
 from .decorators import is_authenticated_notverified
+from doca.settings import SECRET_KEY
+from datetime import datetime
 
 db=boto3.resource('dynamodb')
 
@@ -19,17 +21,20 @@ def login(request):
             password = form.cleaned_data['password']
             table = db.Table('users')
             if(isValidEmail(user) and isvalidPassword(password)):
-                password=hashlib.sha256(password.encode())
+                password=hashlib.sha256((password+SECRET_KEY).encode())
                 password=password.hexdigest()
                 response = table.scan(
                     FilterExpression=Attr('email').eq(user)
                 )
                 password0 = response['Items'][0]['password']
                 if (password == password0):
-                    request.session['user']=user
+                    request.session['email'] = response['Items'][0]['email']
+                    request.session['valid'] = datetime.timestamp
+                    request.session['isDoctor'] = response['Items'][0]['isDoctor'] if 'isDoctor' in response['Items'][0] else 0
+                    request.session['signature'] =hashlib.sha256((request.session['email']+request.session['isDoctor']+request.session['valid'] + SECRET_KEY).decode())
+
                     return HttpResponse("<H1> LOGIN SUCESSFUL </H1>")
                 else:
-                    print("hello")
                     return render(request,'accounts/login.html',{"err":"Invalid Email address/UserName or Password","user":user})
             else :
                 
@@ -46,14 +51,13 @@ def signup(request):
 
     if request.method == "POST":
         form=SignupForm(request.POST)
-        #emailerr="",passworderr="",usernameerr=""
         if form.is_valid():
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
             email = form.cleaned_data['email']
             table = db.Table('users')
             if(isvalidPassword(password) and isvalidUserName(username) and isValidEmail(email)):
-                password=hashlib.sha256(password.encode())
+                password=hashlib.sha256((password+SECRET_KEY).encode())
                 password=password.hexdigest()
                 table.put_item(Item={
                     'email':email,
@@ -76,6 +80,7 @@ def signup(request):
 
         return render(request,'accounts/signup.html',{'error':'something went wrong'})
 
+
 @is_authenticated_notverified
 def verifyotp(request):
     if request.method == "GET":
@@ -84,7 +89,7 @@ def verifyotp(request):
         form = OTPVerificationForm(request.POST)
         if form.is_valid():
             generatedotp = form.cleaned_data['o1']+form.cleaned_data['o2']+form.cleaned_data['o3']+form.cleaned_data['o4']+form.cleaned_data['o5']+form.cleaned_data['o6']
-            generatedotp = hashlib.sha256(generatedotp.encode())
+            generatedotp = hashlib.sha256((generatedotp+SECRET_KEY).encode())
             table = db.Table('otp')
             user = request.session['user']
             key = 'email' if isValidEmail(user) else 'username'

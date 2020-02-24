@@ -16,3 +16,6 @@ def isvalidPassword(password):
     
 def isValidEmail(email):
     return re.search('^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$',email)
+
+def sendOTP(email):
+    pass
