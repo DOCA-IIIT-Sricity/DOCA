@@ -29,14 +29,18 @@ def isDoctor(isDoctor=0):
 def is_not_authenticated(function):
     def wrapper_function(*args,**kwargs):
         
-        if 'email' in args[0].session and 'isDoctor' in args[0].session and 'valid' in args[0].session and 'signature' in args[0].session:
+        if 'email' in args[0].session and 'isDoctor' in args[0].session and 'valid' in args[0].session and 'signature' in args[0].session and 'isVerified' in args[0].session:
             email = args[0].session['email']
             valid = args[0].session['valid']
             isDoctor0 = args[0].session['email']
             signature = args[0].session['signature']
+            isVerified = args[0].session['isVerified']
+            if (isVerified == 0) :
+                return HttpResponseRedirect('/accounts/verifyotp/')
             if (isValidEmail(email)==False):
                 return function(*args,**kwargs)
-            gensignature = hashlib.sha256((email+str(isDoctor0)+valid+SECRET_KEY).encode).hexdigest()
+            gensignature = hashlib.sha256((email+str(isDoctor0)+valid+str(isVerified)+SECRET_KEY).encode).hexdigest()
+
             if (gensignature == signature):
                 if (isDoctor0 == 0):
                     return HttpResponse("<H1> Patient HomePage </H1>")
@@ -47,18 +51,21 @@ def is_not_authenticated(function):
 
 def is_authenticated_notverified(function):
     def wrapper_function(*args,**kwargs):
-        if 'user' in args[0].session:
-            user = args[0].session['user']
+        if 'email' in args[0].session:
+            user = args[0].session['email']
+            print(user)
             table = db.Table('users')
-            if(isValidEmail(user) or isvalidUserName(user)):
-                key = 'email' if isValidEmail(user) else 'username'
+            if(isValidEmail(user)):
+                key = 'email' 
                 response = table.scan(
                     FilterExpression=Attr(key).eq(user)
                 )
                 if response['Count'] != 0:
-                    if(response['Items'][0]['isVerified']==0):
+                    print(response['Items'][0]['isVerified'])
+                    if(response['Items'][0]['isVerified'] == 0):
                         return function(*args,**kwargs)
         return HttpResponseRedirect("/accounts/login/")
     return wrapper_function
+
 
 

@@ -48,9 +48,7 @@ body{
 						Register
 					</span>
 					{%csrf_token%}
-					{% if err is not null %}
 						<span class ="login-form-title p-b-20" style="color:red">{{err}}<br><br></span>
-					{% endif %}
 					<div class="wrap-input100 validate-input m-b-23" data-validate = "Username is reauired">
 						<span class="label-input100">Username</span>
 						<input class="input100" type="text" name="username" auto-complete="off" placeholder="Type your username">
