@@ -102,19 +102,20 @@ def signup(request):
                     'isVerified':0,
                 })
                 return HttpResponseRedirect("/accounts/verifyotp/")
+            emailerr = usernameerr = passworderr =""
             if (isValidEmail(email)==False):
                 emailerr="Invalid email address"
             if (isvalidPassword(password)==False):
                 passworderr="Invalid Password"
             if (isvalidUserName(username)==False):
-                username="Invalid UserName"
+                usernameerr="Invalid UserName"
 
 
 
             print(username+"\t"+password+"\t"+email)
 
 
-        return render(request,'accounts/signup.html',{'error':'something went wrong'})
+        return render(request,'accounts/signup.html',{'err':emailerr+'\t'+passworderr+'\t'+usernameerr})
 
 
 @is_authenticated_notverified
