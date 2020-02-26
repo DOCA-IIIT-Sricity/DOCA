@@ -86,7 +86,7 @@ body{
 
                             <div class="wrap-input100 validate-input m-b-23 otp first">
                                 <input type="text" id="otp1" name="o1"
-                                onkeyup="if (this.value.length==1) document.getElementById('otp2').focus();" class="input100 otp2" maxlength="1">
+                                onkeyup="if (this.value.length==1) document.getElementById('otp2').focus();" class="input100 otp2" maxlength="1" onpaste="pasteOTP()">
                             </div>
 
                             <div class="wrap-input100 validate-input m-b-23 otp">
@@ -171,6 +171,10 @@ body{
     <script>
 
         var myVar = setInterval(myTimer, 2000);
+        function pasteOTP(){
+            console.log(navigator.clipboard.read())
+        } 
+
         function myTimer(){
             var widget = document.getElementById("timeR");
             var time = widget.dataset.val;
