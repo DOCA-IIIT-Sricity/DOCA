@@ -17,7 +17,7 @@ def isDoctor(isDoctor=0):
                 signature0 = args[0].session['signature0']
                 isVerified = args[0].session['isVerified']
 
-                if (isVerified == 0) :
+                if (isVerified == "0") :
                     return HttpResponseRedirect('/accounts/verifyotp/')
 
                 if (isValidEmail(email)==False):
@@ -26,9 +26,9 @@ def isDoctor(isDoctor=0):
                 if (datetime.strptime(valid,"%Y%m%d%H%M%S")+timedelta(days=7) < datetime.now()):
                     return HttpResponseRedirect('/accounts/login/')
 
-                gensignature = hashlib.sha256((email+str(isDoctor0)+valid+isVerified+SECRET_KEY).encode).hexdigest()
+                gensignature = hashlib.sha256((email+str(isDoctor0)+valid+isVerified+SECRET_KEY).encode()).hexdigest()
                 if (gensignature == signature0):
-                    if (isDoctor0 == 0):
+                    if (isDoctor0 == "0"):
                         return HttpResponse("<H1> Patient HomePage </H1>")
                     return HttpResponse("<H1> Doctor HomePage </H1>")
             return HttpResponseRedirect("/accounts/login/")
@@ -46,7 +46,7 @@ def is_not_authenticated(function):
             isDoctor0 = args[0].session['isDoctor']
             signature0 = args[0].session['signature0']
             isVerified = args[0].session['isVerified']
-            if (isVerified == 0) :
+            if (isVerified == "0") :
                 return HttpResponseRedirect('/accounts/verifyotp/')
             if (isValidEmail(email)==False):
                 return function(*args,**kwargs)
@@ -54,7 +54,7 @@ def is_not_authenticated(function):
                 return function(*args,**kwargs)  
             gensignature = hashlib.sha256((email+str(isDoctor0)+str(valid)+str(isVerified)+SECRET_KEY).encode()).hexdigest()
             if (gensignature == signature0):
-                if (isDoctor0 == 0):
+                if (isDoctor0 == "0"):
                     return HttpResponse("<H1> Patient HomePage </H1>")
                 return HttpResponse("<H1> Doctor HomePage </H1>")
         return function(*args,**kwargs)
