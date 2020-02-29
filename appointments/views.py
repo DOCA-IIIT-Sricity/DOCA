@@ -14,7 +14,7 @@ def doc_home(request):
         FilterExpression = Attr('doc_id').eq(email)
     )
     items = response['Items']
-    c = 0
+    c = 1
     for item in items:
         item['num'] = c
         c += 1
