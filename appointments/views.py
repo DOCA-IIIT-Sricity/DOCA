@@ -19,6 +19,7 @@ def doc_home(request):
         item['num'] = c
         item['start_time'] = item['start_time'][0:2] + ":" + item['start_time'][2:4]
         item['end_time'] = item['end_time'][0:2] + ":" + item["end_time"][2:4]
+        item['fees'] = item['fees'] + u"\u20B9"
         c += 1
     return render(request, "appointments/doc_slots.html", {'items':items})
 
