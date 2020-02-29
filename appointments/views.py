@@ -18,5 +18,5 @@ def doc_home(request):
     for item in items:
         item['num'] = c
         c += 1
-    return render(request, "appointments/doc_slots.html", items)
+    return render(request, "appointments/doc_slots.html", {'items':items})
 
