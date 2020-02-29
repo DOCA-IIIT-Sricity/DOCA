@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from .forms import LoginForm,SignupForm,OTPVerificationForm
+from .forms import LoginForm,SignupForm,OTPVerificationForm,FindAccountForm
 import boto3
 import hashlib
 from .verifylib import isValidEmail,isvalidPassword,isvalidUserName
@@ -8,27 +8,32 @@ from boto3.dynamodb.conditions import Key, Attr
 from .decorators import is_authenticated_notverified,is_not_authenticated,isDoctor
 from doca.settings import SECRET_KEY
 from datetime import datetime,timedelta
-from django.core.mail import send_mail
+from django.core.mail import send_mail,EmailMultiAlternatives
+from django.template.loader import render_to_string
 from django.conf import settings
 import random
 
 
 db=boto3.resource('dynamodb')
 
-def sendOtp(to):
+def sendOtp(to,val1):
     otp_gen=random.randint(100000,999999)
     otp = hashlib.sha256((str(otp_gen)+SECRET_KEY).encode()).hexdigest()
     subject = 'Your otp for the Fifa auction  is '+str(otp_gen)
     message = ' it  means a world to us thanks for choosing us \n your otp is : '+str(otp_gen)
     email_from = settings.EMAIL_HOST_USER
     recipient_list = [to,]
-    response=send_mail( subject, message, email_from, recipient_list,fail_silently=False)
+    message = EmailMultiAlternatives(subject = subject, body =message,from_email=email_from ,to = recipient_list)
+    htmlTemplate = render_to_string('accounts/email_template/sign_up.html', {'otp': otp_gen})
+    message.attach_alternative(htmlTemplate,'text/html')
+    response = message.send()
+    #response=send_mail( subject, message, email_from, recipient_list,fail_silently=False),
     if response == 1 :
         table = db.Table('otp')
         table.put_item(Item={
             'otp' : otp,
             'email': to,
-            'isRegister' : 1,
+            'isRegister' : val1,
             'timestamp' : str(datetime.now().strftime("%Y%m%d%H%M%S"))
         } )
     return response
@@ -51,7 +56,6 @@ def login(request):
                     FilterExpression=Attr('email').eq(user)
                 )
                 if response['Count']==0:
-                    print("LOL")
                     return render(request,'accounts/login.html',{"err":"Invalid Email address/UserName or Password","user":user})
                 
                 password0 = response['Items'][0]['password']
@@ -127,13 +131,13 @@ def verifyotp(request):
         )
         if response['Count'] == 0:
             pass
-            sendOtp(request.session['email'])
+            sendOtp(request.session['email'],1)
         else:
             for x in response['Items']:
                 date_time = datetime.strptime(x['timestamp'], "%Y%m%d%H%M%S")
                 is4verify = 1 if 'isRegister' in x else 0
                 if datetime.now() > date_time + timedelta(minutes=15):
-                    sendOtp(request.session['email'])
+                    sendOtp(request.session['email'],1)
                     table.delete_item(
                         Key = {
                             'otp' : x['otp']
@@ -142,7 +146,7 @@ def verifyotp(request):
                     )
                     break
                 if is4verify == 0 :
-                    sendOtp(request.session['email'])
+                    sendOtp(request.session['email'],1)
 
         return render(request,'accounts/verification.html')
     if request.method == "POST" :
@@ -186,6 +190,25 @@ def verifyotp(request):
 def forgot(request):
     if request.method == "GET":
         return render(request,'accounts/forgot_password.html')
+    if request.method == "POST":
+        form = FindAccountForm(request.POST)
+        if form.is_valid():
+            user = form.cleaned_data['user']
+            table = db.Table('users')
+            if(isValidEmail(user)):
+                response = table.scan(
+                    FilterExpression=Attr('email').eq(user)
+                )
+                if response['Count'] == 1:
+                    sendOtp(user,0)
+                    return HttpResponse("We have sent link to your email check it")
+                return render(request,'accounts/forgot_password.html',{'err':'Account not found'})
+            return render(request,'accounts/forgot_password.html',{'err':'Invalid Email Address'})
+        return render(request,'accounts/forgot_password.html',{'err':'Something went wrong'})
+        
+                
+
+        
 
 
 def logout(request):
@@ -200,4 +223,9 @@ def logout(request):
     return HttpResponse("LOGED OUT")#HttpResponseRedirect('/accounts/login/')
 
 def changePassword(request):
+    print(request.META)
     return render(request,'accounts/change_password.html')
+
+def sendDemoMail(request):
+    sendOtp('avinash.k17@iiits.in',0)
+    return HttpResponse("SENT")
