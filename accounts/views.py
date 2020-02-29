@@ -76,7 +76,7 @@ def login(request):
                     request.session['email']= response['Items'][0]['email']
                     request.session['valid']  = str(datetime.now().strftime("%Y%m%d%H%M%S"))
                     request.session['isVerified'] = int(response['Items'][0]['isVerified'])
-                    isDoctor = response['Items'][0]['isDoctor'] if 'isDoctor' in response['Items'][0] else 0
+                    isDoctor = int(response['Items'][0]['isDoctor']) if 'isDoctor' in response['Items'][0] else 0
                     request.session['isDoctor'] =isDoctor
                     tkey =request.session['email'] + str(isDoctor)+ request.session['valid'] + str(request.session['isVerified'] ) + SECRET_KEY
                     request.session['signature0']  = str(hashlib.sha256(tkey.encode()).hexdigest())
