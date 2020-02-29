@@ -10,8 +10,8 @@ def doc_home(request):
     table = dynamodb.Table('Slots')
     email = request.session['email']
     print(table.creation_date_time)
-    response = table.query(
-        KeyConditionExpression = Attr('doc_id').eq(email)
+    response = table.scan(
+        FilterExpression = Attr('doc_id').eq(email)
     )
     items = response['Items']
     c = 0
@@ -19,3 +19,4 @@ def doc_home(request):
         item['num'] = c
         c += 1
     return render(request, "appointments/doc_slots.html", items)
+
