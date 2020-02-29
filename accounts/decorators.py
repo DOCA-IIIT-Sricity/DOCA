@@ -1,5 +1,6 @@
 from django.http import HttpResponseRedirect,HttpResponse
 import boto3
+from django.shortcuts import render
 from boto3.dynamodb.conditions import Key, Attr
 from .verifylib import isvalidUserName,isValidEmail
 from doca.settings import SECRET_KEY
@@ -28,9 +29,10 @@ def isDoctor(isDoctor=0):
 
                 gensignature = hashlib.sha256((email+str(isDoctor0)+valid+isVerified+SECRET_KEY).encode()).hexdigest()
                 if (gensignature == signature0):
-                    if (isDoctor0 == "0"):
-                        return HttpResponse("<H1> Patient HomePage </H1>")
-                    return HttpResponse("<H1> Doctor HomePage </H1>")
+                    if (isDoctor0 == str(isDoctor)):
+                       return function(*args,**kwargs)
+                    return render(args[0],'global/400.html')
+                    
             return HttpResponseRedirect("/accounts/login/")
         return wrapper_function
     return is_authenticated
