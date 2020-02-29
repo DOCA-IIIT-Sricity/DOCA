@@ -7,5 +7,7 @@ urlpatterns = [
     path('verifyotp/',views.verifyotp),
     path('forgot/',views.forgot),
     path('logout/',views.logout),
+    path('dmail/',views.sendDemoMail),
     path('changepassword/',views.changePassword),
+    
 ]
