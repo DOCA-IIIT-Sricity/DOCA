@@ -7,7 +7,7 @@ import boto3
 @isDoctor(1)
 def doc_home(request):
     dynamodb = boto3.resource('dynamodb')
-    table = dynamodb.Table('slots')
+    table = dynamodb.Table('Slots')
     email = request.session['email']
     print(table.creation_date_time)
     response = table.query(
