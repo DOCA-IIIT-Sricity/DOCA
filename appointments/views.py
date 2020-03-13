@@ -31,12 +31,20 @@ def add_slots(request):
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table('Slots')
     email = request.session['email']
+    days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
+
 
     if request.method == 'POST':
         st_time = request.POST['st_time']
         end_time = request.POST['end_time']
         time = request.POST['time']
         fees = request.POST['fees']
+        print(request.POST)
+        dow = []
+        for d in days:
+            string = 'weekday-' + d
+            if string in request.POST.keys():
+                dow.append(d)
         h1 = int(st_time[0:2])
         m1 = int(st_time[3:5])
         h2 = int(end_time[0:2])
@@ -52,6 +60,8 @@ def add_slots(request):
             if m1 >= 60:
                 m1 = m1 - 60
                 h1 += 1
+                if m1<10:
+                    m1 = '0' + str(m1)
             if m1 != 0:
                 t2 = str(h1) + str(m1)
             else:
@@ -75,7 +85,8 @@ def add_slots(request):
                 'doc_id': email,
                 'start_time': t1,
                 'end_time': t2,
-                'fees': fees
+                'fees': fees,
+                'days':dow
             })
 
     response = redirect('/appointments/')

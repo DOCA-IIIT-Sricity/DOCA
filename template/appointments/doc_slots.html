@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,6 +9,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/doc_slots.css' %}">
 </head>
 <body>
     <div class="container" style="padding-top: 4%">
@@ -56,6 +59,24 @@
                             <div class="col"><input type="number" name="fees" value="300"></div>
                         </div>
                         <div class="row">
+                            <div class="weekDays-selector">
+                                <input type="checkbox" name="weekday-mon" id="weekday-mon" class="weekday" checked />
+                                <label for="weekday-mon">M</label>
+                                <input type="checkbox" name="weekday-tue" id="weekday-tue" class="weekday" checked />
+                                <label for="weekday-tue">T</label>
+                                <input type="checkbox" name="weekday-wed" id="weekday-wed" class="weekday" checked />
+                                <label for="weekday-wed">W</label>
+                                <input type="checkbox" name="weekday-thu" id="weekday-thu" class="weekday" checked />
+                                <label for="weekday-thu">T</label>
+                                <input type="checkbox" name="weekday-fri" id="weekday-fri" class="weekday" checked />
+                                <label for="weekday-fri">F</label>
+                                <input type="checkbox" name="weekday-sat" id="weekday-sat" class="weekday" />
+                                <label for="weekday-sat">S</label>
+                                <input type="checkbox" name="weekday-sun" id="weekday-sun" class="weekday" />
+                                <label for="weekday-sun">S</label>
+                            </div>
+                        </div>
+                        <div class="row">
                             <div class="col"></div>
                             <div class="col"><button type="submit">Add</button></div>
                         </div>
@@ -87,7 +108,52 @@
                 <div class="col">{{ item.start_time }}</div>
                 <div class="col">{{ item.end_time }}</div>
                 <div class="col">{{ item.fees }}</div>
-                <div class="col"></div>
+                <div class="col">
+                    <div class="weekDays-selector">
+                        {% if 'mon' in item.days %}
+                            <input type="checkbox" name="weekday-mon" id="weekday-mon" class="weekday" checked disabled/>
+                        {% else %}
+                            <input type="checkbox" name="weekday-mon" id="weekday-mon" class="weekday" disabled/>
+                        {% endif %}
+                        <label for="weekday-mon">M</label>
+                        {% if 'tue' in item.days %}
+                            <input type="checkbox" name="weekday-tue" id="weekday-tue" class="weekday" checked disabled/>
+                        {% else %}
+                            <input type="checkbox" name="weekday-tue" id="weekday-tue" class="weekday" disabled/>
+                        {% endif %}
+                        <label for="weekday-tue">T</label>
+                        {% if 'wed' in item.days %}
+                            <input type="checkbox" name="weekday-wed" id="weekday-wed" class="weekday" checked disabled/>
+                        {% else %}
+                            <input type="checkbox" name="weekday-wed" id="weekday-wed" class="weekday" disabled/>
+                        {% endif %}
+                        <label for="weekday-wed">W</label>
+                        {% if 'thu' in item.days %}
+                            <input type="checkbox" name="weekday-thu" id="weekday-thu" class="weekday" checked disabled/>
+                        {% else %}
+                            <input type="checkbox" name="weekday-thu" id="weekday-thu" class="weekday" disabled/>
+                        {% endif %}
+                        <label for="weekday-thu">T</label>
+                        {% if 'fri' in item.days %}
+                            <input type="checkbox" name="weekday-fri" id="weekday-fri" class="weekday" checked disabled/>
+                        {% else %}
+                            <input type="checkbox" name="weekday-fri" id="weekday-fri" class="weekday" disabled/>
+                        {% endif %}
+                        <label for="weekday-fri">F</label>
+                        {% if 'sat' in item.days %}
+                            <input type="checkbox" name="weekday-sat" id="weekday-sat" class="weekday" checked disabled/>
+                        {% else %}
+                            <input type="checkbox" name="weekday-sat" id="weekday-sat" class="weekday" disabled/>
+                        {% endif %}
+                        <label for="weekday-sat">S</label>
+                        {% if 'sun' in item.days %}
+                            <input type="checkbox" name="weekday-sun" id="weekday-sun" class="weekday" checked disabled/>
+                        {% else %}
+                            <input type="checkbox" name="weekday-sun" id="weekday-sun" class="weekday" disabled/>
+                        {% endif %}
+                        <label for="weekday-sun">S</label>
+                    </div>
+                </div>
             </div>
             {% endfor %}
             <div class="row">
