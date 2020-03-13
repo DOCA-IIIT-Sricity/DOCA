@@ -2,15 +2,18 @@
 <html>
     <head>
         <style>
-            /* .data1{ height : 300px; } */
-            tb,th,td,table { border : 1px solid }
+            /* th,td,table { border : 1px solid } */
 
-            /* .filter{
-                background-color: aqua;
-                float : left;
-                width : 40px;
-                box-shadow : 2px 2px;
-            } */
+            table{
+                width : 70%;
+                align-items: center;
+            }
+
+            td{
+                padding : 10px;
+                font-style: normal;
+            }
+
             .filter {
                 display:inline-block;
                 color:#444;
@@ -19,7 +22,7 @@
                 box-shadow: 0 0 5px -1px rgba(0,0,0,0.2);
                 cursor:pointer;
                 vertical-align:middle;
-                max-width: 100px;
+                /* max-width:; */
                 padding: 5px;
                 text-align: center;
             }
@@ -27,80 +30,177 @@
                 color:red;
                 box-shadow: 0 0 5px -1px rgba(0,0,0,0.6);
             }
+            .w3-container{
+                padding-left : 0px !important; 
+            }
+            .form-control{
+                width : 20% !important;
+            }
+            #symptoms{
+                width : 100% !important;
+            }
         </style>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
         <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     </head>
     
 <body class="jumbotron">
-    <form method = "POST" action = "am/">
-        {% csrf_token %}<div>
-        Symptoms : 
-        <input type="text" id = "symptoms" name="symptom">
-        <button type="button" onclick="addsymp()">add</button> </div>
+    <form method = "POST" action = "{% url 'prescription:index' %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <div class="form-row">
+                <label for="symptoms" class="">Symptoms :</label>
+                <div>
+                    <input type="text" class="form-control" id = "symptoms" name="symptom" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onkeyup="myFunction(event)">
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <div  id = "dis_sym" style="max-height: 200px !important;overflow:auto;"></div>
+                    </div>
+                </div>
+                &nbsp;&nbsp;<button type="button" class="btn btn-outline-primary" onclick="addsymp()">add</button>
+            </div>
+        </div>
         <div id="displaysym"></div>
-        Notes : 
-        <input type="textarea">
+        <div class="form-group">
+            <div class="form-row">
+                <label for="dis_notes" class="">Notes :</label>
+                <input type="textarea" class="form-control" name="dis_notes" id="dis_notes">
+            </div>
+        </div> 
+        
+        <input type="hidden" name="pres_symp" id="hidden_symp">
+        <input type="hidden" name="pres_med" id="hidden_med">
+        </div>
         <hr>
         <div class="w3-container">
-  
-            <button type="button" onclick="document.getElementById('id01').style.display='block'" class="w3-button w3-black">Open Modal</button>
-          
-
-
-
-
-
-
+            <button type="button" onclick="document.getElementById('id01').style.display='block'" class="">add medication</button>
         <table id="myTable">
-        </table>
+            <tr>
+                <th>medicine</th>
+                <th>dosage</th>
+                <th>frequency</th>
+                <th>note</th>
+            </tr>
+        </table></div>
         <button type="submit">submit</button>
     </form>
 
     <div id="id01" class="w3-modal">
-        <form name="addmed">
+        <form name="addmed" id="modal_form">
             {% csrf_token %}
-            <div class="w3-modal-content">
+            <div class="w3-modal-content" style="padding:40px; ">
                 <header class="w3-container"> 
                 <span onclick="document.getElementById('id01').style.display='none'" 
                 class="w3-button w3-display-topright">&times;</span>
-                    medicine<br>
-                    <input type="text" name = 'tab' id="tabname">
-                    <br>dosage<br>
-                    <input type="text" name = 'dos' id="dose">
-                    <br>frequency<br>
-                    <input type="text" name="frequency" id="freq">
-                    <br>note<br>
-                    <input type="text" name="note" id="note">
+                    <div id="modal_err"></div>
+                    <div class="form-group">
+                        <label for="tabname" class="col-sm-2">medicine</label>
+                        <div>
+                            <input type="text" class="form-control" id = "tabname" name="tab" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onkeyup="myFunction2(event)">
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <div  id = "dis_med" style="max-height: 200px !important;overflow:auto;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="dose" class="col-sm-2">dosage</label>
+                        <input type="text" name = 'dos' id="dose" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="freq" class="col-sm-2">frequency</label>
+                        <input type="text" name="frequency" id="freq" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="note" class="col-sm-2">note</label>
+                        <input type="text" name="note" id="note">
+                    </div>
+                    
                     <button type="button" onclick = "saving()">add medication</button>
             </div>
         </form>
     </div>
-  </div>
+
 
   <script>
-    function saving(){
-        console.log($('#tabname').val())
+    const medicine = document.getElementById('tabname')
+    const dosage = document.getElementById('dose')
+    const frequency = document.getElementById('freq')
+    const notes = document.getElementById('note')
+    const modal_error = document.getElementById('modal_err')
+    const Symptoms = document.getElementById('symptoms')
+    var y = '';
+
+
+    function myFunction(){
+        var y = document.getElementById('symptoms').value;
         $.ajax({
-        url: "am/",
+        url: "a",
         method: "POST",
         data: {
-            tab : $('#tabname').val(),
-            dosage : $('#dose').val(),
-            frequency : $('#freq').val(),
-            note : $('#note').val(),
+            word : y,
             csrfmiddlewaretoken :$('input[name=csrfmiddlewaretoken]').val()
         },
-        
+        success : func4,
+        dataType:'html',
         });
+    }
+
+    function func4(data,textStatus,jqXHR){
+        $('#dis_sym').html(data)
+    };
+
+    function myFunction2(){
+        var x = document.getElementById('tabname').value;
+        $.ajax({
+        url: "b",
+        method: "POST",
+        data: {
+            word : x,
+            csrfmiddlewaretoken :$('input[name=csrfmiddlewaretoken]').val()
+        },
+        success : func5,
+        dataType:'html',
+        });
+    }
+
+    function func5(data,textStatus,jqXHR){
+        $('#dis_med').html(data)
+    };
+
+
+    var med_prescribed = []
+    function saving(){
+        let modal_messages = []
+        if(medicine.value === '' || medicine.value == null){
+            modal_messages.push('Name is required')
+        }
+        if(dosage.value === '' || dosage.value == null){
+            modal_messages.push('dosage is required')
+        }
+        if(frequency.value === '' || frequency.value == null){
+            modal_messages.push('invalid input')
+        }
+        if(isNaN(notes.value)){}else{modal_messages.push('invalid notes')}
+        if(modal_messages.length > 0){
+            modal_error.innerText = modal_messages.join(', ')
+            return;
+        }
+        var data =  {
+        tab : $('#tabname').val(),
+        dosage : $('#dose').val(),
+        frequency : $('#freq').val(),
+        note : $('#note').val()
+        }
+        med_prescribed.push(data)
+        document.getElementById('hidden_med').value = JSON.stringify(med_prescribed);
         document.getElementById('id01').style.display='none'
         addrow();
         document.addmed.reset()
     }
     function addrow() {
-        console.log("in function")
         var table = document.getElementById("myTable");
         var row = table.insertRow(-1);
         var cell1 = row.insertCell(0);
@@ -118,15 +218,26 @@
     var div_count = 0;
 
     function addsymp(){
-        console.log($("#symptoms").val());
-        console.log(symptom_list);
+        if(Symptoms.value == null || Symptoms.value === ''){
+            alert('enter valid input');
+            return;
+        }
         var symptom = $("#symptoms").val();
         symptom_list.push(symptom)
 
         $('<div/>', {
-       id:   'div' + div_count++
-    }).append('<div class="filter" onclick="removesymp(this);">'+symptom_list[symptom_list.length-1]+'</div>').appendTo($('#displaysym'));
+        id:   'div' + div_count++
+        }).append('<span class="filter" onmouseover="flip(this)" onclick="removesymp(this);">'+symptom_list[symptom_list.length-1]+'</span>').appendTo($('#displaysym'));
+        document.getElementById('symptoms').value='';
+        document.getElementById('hidden_symp').value = JSON.stringify(symptom_list)
     }
+
+
+    // function flip(elem){
+    //     
+    //     // var child_div = div.firstElementChild
+    //     // child_div.classList.toggle('btn btn-danger');
+    // }
 
     function removesymp(elem){
         var div = document.getElementById(elem.parentNode.id);

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        {% for i in items %}
+            <button class="dropdown-item" type="button" name="{{i}}" onclick="add_to(this)">{{i}}</button>
+        {% endfor %}
+    </body>
+
+    <script>
+        function add_to(elem){
+            console.log(elem.name)
+            document.getElementById('tabname').value = elem.name;
+        }
+    </script>
+</html>
