@@ -12,91 +12,14 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/doc_slots.css' %}">
 </head>
 <body>
-    <div class="container" style="padding-top: 4%">
-        <div class="row">
-            <div class="col"></div>
-            <div class="col"></div>
-            <div class="col">
-
-                <div class="dropdown">
-                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Actions</button>
-                    <div class="dropdown-menu">
-                        <button type="button" class="dropdown-item" data-toggle="modal" data-target="#myModal">Add Slot</button>
-                        <a class="dropdown-item" href="#">Delete Item</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col"></div>
-        </div>
-
-        <div class="modal" id="myModal">
-            <div class="modal-dialog">
-            <div class="modal-content">
-
-            <div class="modal-header">
-                <h4 class="modal-title">Add Slot</h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-            </div>
-
-            <div class="modal-body">
-                <form action="{% url 'appointments:add_slots' %}" method="post">
-                    {% csrf_token %}
-                    <div class="container">
-                        <div class="row">
-                            <div class="col">Start Time:</div>
-                            <div class="col"><input type="time" name="st_time"></div>
-                        </div>
-                        <div class="row">
-                            <div class="col">End Time:</div>
-                            <div class="col"><input type="time" name="end_time"></div>
-                        </div>
-                        <div class="row">
-                            <div class="col">Slot Time:</div>
-                            <div class="col"><input type="number" name="time" min="0" max="60"></div>
-                        </div>
-                        <div class="row">
-                            <div class="col">Fees:</div>
-                            <div class="col"><input type="number" name="fees" value="300"></div>
-                        </div>
-                        <div class="row">
-                            <div class="weekDays-selector">
-                                <input type="checkbox" name="weekday-mon" id="weekday-mon" class="weekday" checked />
-                                <label for="weekday-mon">M</label>
-                                <input type="checkbox" name="weekday-tue" id="weekday-tue" class="weekday" checked />
-                                <label for="weekday-tue">T</label>
-                                <input type="checkbox" name="weekday-wed" id="weekday-wed" class="weekday" checked />
-                                <label for="weekday-wed">W</label>
-                                <input type="checkbox" name="weekday-thu" id="weekday-thu" class="weekday" checked />
-                                <label for="weekday-thu">T</label>
-                                <input type="checkbox" name="weekday-fri" id="weekday-fri" class="weekday" checked />
-                                <label for="weekday-fri">F</label>
-                                <input type="checkbox" name="weekday-sat" id="weekday-sat" class="weekday" />
-                                <label for="weekday-sat">S</label>
-                                <input type="checkbox" name="weekday-sun" id="weekday-sun" class="weekday" />
-                                <label for="weekday-sun">S</label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col"></div>
-                            <div class="col"><button type="submit">Add</button></div>
-                        </div>
-                    </div>
-                </form>
-            </div>
-
-            </div>
-            </div>
-        </div>
-
-    </div>
-    <div class="container">
+    <div class="container" style="padding-top: 7%">
         <div class="row">
             <div class="col"></div>
             <div class="col">S.No</div>
             <div class="col">Start Time</div>
             <div class="col">End Time</div>
             <div class="col">Cost</div>
-            <div class="col"></div>
+            <div class="col">Days of Week</div>
         </div>
         {% if items %}
             <form action="{% url 'appointments:del_slots' %}" method="post">
@@ -157,15 +80,75 @@
             </div>
             {% endfor %}
             <div class="row">
-                 <div class="col"><button type="submit">Delete</button></div>
+                 <div class="col"><button type="submit" class="btn btn-danger">Delete</button></div>
                 <div class="col"></div>
                 <div class="col"></div>
                 <div class="col"></div>
-                <div class="col"><button type="button">Add Slot</button></div>
+                <div class="col"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">Add Slot</button></div>
                 <div class="col"></div>
             </div>
             </form>
         {% endif %}
+        <div class="modal fade bd-example-modal-lg" id="myModal">
+            <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title">Add Slot</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <form action="{% url 'appointments:add_slots' %}" method="post">
+                    {% csrf_token %}
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">Start Time:</div>
+                            <div class="col"><input type="time" name="st_time"></div>
+                        </div><br>
+                        <div class="row">
+                            <div class="col">End Time:</div>
+                            <div class="col"><input type="time" name="end_time"></div>
+                        </div><br>
+                        <div class="row">
+                            <div class="col">Slot Time:</div>
+                            <div class="col"><input type="number" name="time" min="0" max="60"></div>
+                        </div><br>
+                        <div class="row">
+                            <div class="col">Fees:</div>
+                            <div class="col"><input type="number" name="fees" value="300"></div>
+                        </div><br>
+                        <div class="row">
+                            <div class="col">Days:</div>
+                            <div class="col">
+                            <div class="weekDays-selector">
+                                <input type="checkbox" name="weekday-mon" id="weekday-mon" class="weekday" checked />
+                                <label for="weekday-mon">M</label>
+                                <input type="checkbox" name="weekday-tue" id="weekday-tue" class="weekday" checked />
+                                <label for="weekday-tue">T</label>
+                                <input type="checkbox" name="weekday-wed" id="weekday-wed" class="weekday" checked />
+                                <label for="weekday-wed">W</label>
+                                <input type="checkbox" name="weekday-thu" id="weekday-thu" class="weekday" checked />
+                                <label for="weekday-thu">T</label>
+                                <input type="checkbox" name="weekday-fri" id="weekday-fri" class="weekday" checked />
+                                <label for="weekday-fri">F</label>
+                                <input type="checkbox" name="weekday-sat" id="weekday-sat" class="weekday" />
+                                <label for="weekday-sat">S</label>
+                                <input type="checkbox" name="weekday-sun" id="weekday-sun" class="weekday" />
+                                <label for="weekday-sun">S</label>
+                            </div>
+                            </div>
+                        </div><br>
+                        <div class="row">
+                            <div class="col"></div>
+                            <div class="col"><button type="submit" class="btn btn-secondary">Add</button></div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            </div>
+            </div>
+        </div>
     </div>
 </body>
 </html>
