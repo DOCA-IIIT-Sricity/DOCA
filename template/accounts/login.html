@@ -52,8 +52,13 @@ body{
 					<span class ="login-form-title p-b-20" style="color:red">{{err}}<br><br></span>
 					<div class="wrap-input100 validate-input m-b-23" data-validate = "Username is reauired">
 						<span class="label-input100">Username/Email address</span>
-						<input class="input100" type="text" name="user" auto-complete="off" placeholder="Type your username" value="{{user}}">
+						<input class="input100" type="text" name="user" auto-complete="off" id = 'uid' placeholder="Type your username">
 						<span class="focus-input100"><i class="material-icons">perm_identity</i></span>
+						{% if userI is not null%}
+							<script>
+								document.getElementById('uid').value="{{userI}}"
+							</script>
+						{%endif%}
 					</div>
 
 					<div class="wrap-input100 validate-input" data-validate="Password is required">

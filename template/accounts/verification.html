@@ -86,7 +86,7 @@ body{
 
                             <div class="wrap-input100 validate-input m-b-23 otp first">
                                 <input type="text" id="otp1" name="o1"
-                                onkeyup="if (this.value.length==1) document.getElementById('otp2').focus();" class="input100 otp2" maxlength="1">
+                                onkeyup="if (this.value.length==1) document.getElementById('otp2').focus(); if(this.value.length >1) pasteOTP()" class="input100 otp2" maxlength="6" >
                             </div>
 
                             <div class="wrap-input100 validate-input m-b-23 otp">
@@ -171,11 +171,20 @@ body{
     <script>
 
         var myVar = setInterval(myTimer, 2000);
+        function pasteOTP(){
+            o1 = document.getElementById('otp1').value;
+            len01 = o1.length;
+            for(i = 0;i<len01;++i){
+                document.getElementById('otp'+(i+1)).value = o1[i];
+                document.getElementById('otp'+(i+1)).focus();
+            }
+
+        } 
+
         function myTimer(){
             var widget = document.getElementById("timeR");
             var time = widget.dataset.val;
             if (time == 0){
-
                 widget.innerHTML ="<div class=\"container-login100-form-btn\"><div class=\"wrap-login100-form-btn\"><div class=\"login100-form-bgbtn\"></div><button class=\"login100-form-btn button2\">Resend</button></div></div>";
                 console.log("hello")
                 clearInterval(myVar);
@@ -187,10 +196,6 @@ body{
             widget.dataset.val=time-1;
             }
         }
-
-
     </script>
-
-
 </body>
 </html>

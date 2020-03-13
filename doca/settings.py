@@ -26,6 +26,11 @@ SECRET_KEY = 'eq_xrmk5kpaxjy0gwhai@nz3iz*f1!6q2jle%jq4$3yt$3%*u4'
 DEBUG = True
 
 ALLOWED_HOSTS = []
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'fifa.auctions.icons@gmail.com'
+EMAIL_HOST_PASSWORD = 'as485UCPaCz6MT4' #576ZCjvV7pCza2x
+EMAIL_PORT = 587
 
 
 # Application definition
