@@ -4,13 +4,12 @@ from doca.settings import SECRET_KEY, SECRET_KEY2
 import hashlib
 from datetime import datetime, timedelta
 from accounts.verifylib import isValidEmail, isvalidPassword, isvalidUserName
-from boto3.dynamodb.conditions import Key, Attr
 from accounts.forms import SignupForm
-import boto3
+#from pymongo.mongo_client import mongo_client
 import jwt
 
 
-db = boto3.resource('dynamodb')
+#db = client.doca
 register_secret_key = "fvfnh654x#R&^yhvbv@E%#(*gcgf51$@EfdgdhE#^@Rgdhfgdred"
 
 
@@ -19,13 +18,11 @@ def getTokenPair(request):
     if 'user' in request.POST and 'password' in request.POST:
         user = request.POST['user']
         password = request.POST['password']
-        table = db.Table('users')
+        table = db.users
         if(isValidEmail(user) and isvalidPassword(password)):
             password = hashlib.sha256((password+SECRET_KEY).encode())
             password = password.hexdigest()
-            response = table.scan(
-                FilterExpression=Attr('email').eq(user)
-            )
+            response = table.find_one({'email':user}) 
             if response['Count'] == 0:
                 return Response({
                     "code": "1",
