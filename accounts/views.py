@@ -328,7 +328,11 @@ def changePassword(request):
             return render(request,'accounts/change_password.html',{'err':err,'tk':tk})
         return render(request,'accounts/change_password.html',{'err':err})
 
-        
+@isDoctor(0)        
+def uploadDp(request):
+    email = getEmail(request.session['session_key'])
+    if request.method == "GET":
+        return render(request,'accounts/uploadPicture.html')
         
 
 def sendDemoMail(request):

@@ -5,11 +5,11 @@ import hashlib
 from datetime import datetime, timedelta
 from accounts.verifylib import isValidEmail, isvalidPassword, isvalidUserName
 from accounts.forms import SignupForm
-#from pymongo.mongo_client import mongo_client
+from mongodb.mongolib import Table
 import jwt
 
 
-#db = client.doca
+
 register_secret_key = "fvfnh654x#R&^yhvbv@E%#(*gcgf51$@EfdgdhE#^@Rgdhfgdred"
 
 
@@ -18,11 +18,11 @@ def getTokenPair(request):
     if 'user' in request.POST and 'password' in request.POST:
         user = request.POST['user']
         password = request.POST['password']
-        table = db.users
+        table = Table("users")
         if(isValidEmail(user) and isvalidPassword(password)):
             password = hashlib.sha256((password+SECRET_KEY).encode())
             password = password.hexdigest()
-            response = table.find_one({'email':user}) 
+            response = Table.scan(FilterExpression={'email':user}).values() 
             if response['Count'] == 0:
                 return Response({
                     "code": "1",
@@ -35,9 +35,8 @@ def getTokenPair(request):
                     return Response({"code": "2",
                                      "message": "please verify your email id first",
                                      })
-                isDoctor = str(int(
-                    response['Items'][0]['isDoctor'])) if 'isDoctor' in response['Items'][0] else "0"
-                if isDoctor == "0":
+                isDoctor = 1 if 'isDoctor' in response['Items'][0] else 0
+                if isDoctor == 1 :
                     primary_token = jwt.encode({"email": user,
                                                 "timestamp": (datetime.now()+timedelta(minutes=15)).strftime("%Y%m%D%H%M%S"),
                                                 }, SECRET_KEY2, algorithm="HS256")
@@ -55,7 +54,7 @@ def getTokenPair(request):
             password = hashlib.sha256((password+SECRET_KEY).encode())
             password = password.hexdigest()
             response = table.scan(
-                FilterExpression=Attr('username').eq(user)
+                FilterExpression={'username':user}
             )
             if response['Count'] == 0:
                 return Response({
@@ -69,9 +68,8 @@ def getTokenPair(request):
                     return Response({"code": "2",
                                      "message": "please verify your email id first",
                                      })
-                isDoctor = str(int(
-                    response['Items'][0]['isDoctor'])) if 'isDoctor' in response['Items'][0] else "0"
-                if isDoctor == "0":
+                isDoctor = 1 if 'isDoctor' in response['Items'][0] else 0
+                if isDoctor == 0:
                     primary_token = jwt.encode({"email": user,
                                                 "timestamp": (datetime.now()+timedelta(minutes=15)).strftime("%Y%m%d%H%M%S"),
                                                 }, SECRET_KEY2, algorithm="HS256")
@@ -142,7 +140,7 @@ def register(request):
         username = request.POST['username']
         password = request.POST['password']
         email = request.POST['email']
-        table = db.Table('users')
+        table = Table('users')
         if(isvalidPassword(password) and isvalidUserName(username) and isValidEmail(email)):
             password = hashlib.sha256((password+SECRET_KEY).encode())
             password = password.hexdigest()
