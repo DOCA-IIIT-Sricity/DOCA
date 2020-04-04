@@ -1,8 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from .forms import LoginForm,SignupForm,OTPVerificationForm,FindAccountForm,ChangePasswordForm
-import boto3
-import hashlib
 from .verifylib import isValidEmail,isvalidPassword,isvalidUserName
 from boto3.dynamodb.conditions import Key, Attr
 from .decorators import is_authenticated_notverified,is_not_authenticated,isDoctor
@@ -13,6 +11,8 @@ from django.template.loader import render_to_string
 from django.conf import settings
 import random
 import jwt
+import boto3
+import hashlib
 
 
 db=boto3.resource('dynamodb')
