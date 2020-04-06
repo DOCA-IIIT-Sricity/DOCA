@@ -9,6 +9,9 @@ def migrate():
         {
             "table_name" : "users",
             "id" : "email",
+            "constraints" : [
+                "username":"unique"
+            ]
         },
         {
             "table_name" : "SessionStore",

@@ -15,6 +15,7 @@ register_secret_key = "fvfnh654x#R&^yhvbv@E%#(*gcgf51$@EfdgdhE#^@Rgdhfgdred"
 
 @api_view(['POST'])
 def getTokenPair(request):
+    print(request.POST)
     if 'user' in request.POST and 'password' in request.POST:
         user = request.POST['user']
         password = request.POST['password']
@@ -22,7 +23,7 @@ def getTokenPair(request):
         if(isValidEmail(user) and isvalidPassword(password)):
             password = hashlib.sha256((password+SECRET_KEY).encode())
             password = password.hexdigest()
-            response = Table.scan(FilterExpression={'email':user}).values() 
+            response = table.scan(FilterExpression={'email':user}).values() 
             if response['Count'] == 0:
                 return Response({
                     "code": "1",
@@ -31,17 +32,17 @@ def getTokenPair(request):
 
             password0 = response['Items'][0]['password']
             if (password == password0):
-                if response['Items'][0]['isVerified'] == "0":
+                if response['Items'][0]['isVerified'] == 0:
                     return Response({"code": "2",
                                      "message": "please verify your email id first",
                                      })
                 isDoctor = 1 if 'isDoctor' in response['Items'][0] else 0
-                if isDoctor == 1 :
+                if isDoctor == 0 :
                     primary_token = jwt.encode({"email": user,
-                                                "timestamp": (datetime.now()+timedelta(minutes=15)).strftime("%Y%m%D%H%M%S"),
+                                                "timestamp": (datetime.now()+timedelta(minutes=15)).strftime("%Y%m%d%H%M%S"),
                                                 }, SECRET_KEY2, algorithm="HS256")
                     refresh_token = jwt.encode({"email": user,
-                                                "timestamp": (datetime.now()+timedelta(days=7)).strftime("%Y%m%D%H%M%S"),
+                                                "timestamp": (datetime.now()+timedelta(days=7)).strftime("%Y%m%d%H%M%S"),
                                                 }, SECRET_KEY, algorithm="HS256")
 
                     return Response({
@@ -55,7 +56,7 @@ def getTokenPair(request):
             password = password.hexdigest()
             response = table.scan(
                 FilterExpression={'username':user}
-            )
+            ).values()
             if response['Count'] == 0:
                 return Response({
                     "code": "1",
@@ -64,7 +65,7 @@ def getTokenPair(request):
             user = response['Items'][0]['email']
             password0 = response['Items'][0]['password']
             if (password == password0):
-                if response['Items'][0]['isVerified'] == "0":
+                if response['Items'][0]['isVerified'] == 0:
                     return Response({"code": "2",
                                      "message": "please verify your email id first",
                                      })
@@ -91,18 +92,21 @@ def getTokenPair(request):
 
 @api_view(["POST"])
 def getPrimaryToken(request):
+    
     if 'token' in request.POST:
         token = request.POST['token']
         try:
-            payload = jwt.decode(token, SECRET_KEY2, algorithms=['HS256'])
-
+            payload = jwt.decode(token.encode('utf-8'), SECRET_KEY, algorithms=['HS256'])
+            
         except jwt.exceptions.DecodeError:
+            
             return Response({
                 "code": "1",
             }),
 
         email = payload['email']
         timestamp = payload['timestamp']
+        print(timestamp)
         if datetime.strptime(timestamp, "%Y%m%d%H%M%S") < datetime.now():
             return Response({
                 "code": "2",
@@ -115,7 +119,8 @@ def getPrimaryToken(request):
             return Response({"code": "0",
                              "primary_token": refresh_token,
                              })
-
+            
+    return Response({"code":"0"})
 
 def is_authenticated(request):
     if 'HTTP_TOKEN' in request.META:
