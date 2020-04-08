@@ -21,11 +21,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'eq_xrmk5kpaxjy0gwhai@nz3iz*f1!6q2jle%jq4$3yt$3%*u4'
+SECRET_KEY2 = 'wdcvuicvfknd@#$%&GYUHFUHF*HUBJNIHUFRNFPUF)hjbgujb'
+
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.43.212','127.0.0.1']
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'fifa.auctions.icons@gmail.com'

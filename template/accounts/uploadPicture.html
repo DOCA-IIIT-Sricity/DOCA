@@ -36,6 +36,12 @@ body{
 	top:50%;
 	height:50%;
 }
+
+.login100-form-title{
+    font-size:xx-large;
+    text-align:left;
+}
+
 </style>
 </head>
 <body>
@@ -47,38 +53,29 @@ body{
 		<div class="container-login100" style="background-image: url('images/bg-01.jpg');">
 			<div class="wrap-login100 p-l-55 p-r-55 p-t-65 p-b-54">
 				<form class="login100-form validate-form" action="/accounts/signup/" method="post">
-					<span class="login100-form-title p-b-20">
-						Register
-					</span>
+					<span class="login100-form-title ">
+						Upload your Picture</span>
+                        <br>
+                        <span class ="login-form-title " style="color:rgba(0,0,0,0.37)">Please Upload your Image. it will make easy for other to search your account.</span>
+					
 					{%csrf_token%}
 						<span class ="login-form-title p-b-20" style="color:red">{{err}}<br><br></span>
-					<div class="wrap-input100 validate-input m-b-23" data-validate = "Username is reauired">
-						<span class="label-input100">Username</span>
-						<input class="input100" type="text" name="username" auto-complete="off" placeholder="Type your username">
-						<span class="focus-input100"><i class="material-icons">perm_identity</i></span>
-					</div>
-
-					<div class="wrap-input100 validate-input m-b-23" data-validate = "Email is reauired">
-						<span class="label-input100">Email</span>
-						<input class="input100" type="text" name="email" auto-complete="off" placeholder="Type your Email">
-						<span class="focus-input100"><i class="material-icons">email</i></span>
-					</div>
-
-					<div class="wrap-input100 validate-input" data-validate="Password is required">
-						<span class="label-input100">Password</span>
-						<input class="input100" type="password" name="password" placeholder="Type your password">
-						<span class="focus-input100" ><i class="material-icons">lock</i></span>
-					</div>
-					<br>
 					
+
+					<br>
+                    <img src="#" id="preview" alt=""/>
+					<br>
+                    
 					<div class="container-login100-form-btn">
 						<div class="wrap-login100-form-btn">
 							<div class="login100-form-bgbtn"></div>
-							<button class="login100-form-btn">
-								Sign Up
+							<button type="button" class="login100-form-btn" onclick = "document.getElementById('imgDp').click();">
+								Browse Image
 							</button>
+                            
 						</div>
 					</div>
+                    <input type="file" id="imgDp" name="img" accept="image/*" style="display:none" onchange="readURL(this)">
 
 					<div class="flex-col-c p-t-75">
 						<span class="txt1 p-b-17">
@@ -86,7 +83,7 @@ body{
 						</span>
 
 						<a href="/accounts/login/" class="txt2">
-							Login
+							Skip
 						</a>
 					</div>
 				</form>
@@ -96,7 +93,10 @@ body{
 	</div></div><div>
 
 	<div id="dropDownSelect1"></div>
-	<script src="{% static 'vendor/jquery/jquery-3.2.1.min.js' %}"></script>
+    
+	<script src="{% static 'vendor/jquery/jquery-3.2.1.min.js' %}">
+        
+    </script>
 	<script src="{% static 'vendor/animsition/js/animsition.min.js' %}"></script>
 	<script src="{% static 'vendor/bootstrap/js/popper.js' %}"></script>
 	<script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
@@ -105,6 +105,23 @@ body{
 	<script src="{% static 'vendor/daterangepicker/daterangepicker.js' %}"></script>
 	<script src="{% static 'vendor/countdowntime/countdowntime.js' %}"></script>
 	<script src="{% static 'js/main.js' %}"></script>
+    <script>
+        function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                console.log("avinash")
+                $('#preview')
+                    .attr('src', e.target.result)
+                    .width(400)
+                    .height(400);
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+    </script>
 
 </body>
 </html>

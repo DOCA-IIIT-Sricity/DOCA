@@ -1,11 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from .forms import LoginForm,SignupForm,OTPVerificationForm,FindAccountForm,ChangePasswordForm
-import boto3
-import hashlib
 from .verifylib import isValidEmail,isvalidPassword,isvalidUserName
-from boto3.dynamodb.conditions import Key, Attr
-from .decorators import is_authenticated_notverified,is_not_authenticated,isDoctor
+from .decorators import is_authenticated_notverified,is_not_authenticated,isDoctor,getEmail
 from doca.settings import SECRET_KEY
 from datetime import datetime,timedelta
 from django.core.mail import send_mail,EmailMultiAlternatives
@@ -13,9 +10,10 @@ from django.template.loader import render_to_string
 from django.conf import settings
 import random
 import jwt
+import hashlib
+from mongodb.mongolib import Table
 
 
-db=boto3.resource('dynamodb')
 
 def sendOtp(to,val1):
     otp_gen=random.randint(100000,999999)
@@ -29,13 +27,13 @@ def sendOtp(to,val1):
     message.attach_alternative(htmlTemplate,'text/html')
     response = message.send()
     if response == 1 :
-        table = db.Table('otp')
-        table.put_item(Item={
+        table = Table('otp')
+        table.insertValues(values=[{
             'otp' : otp,
             'email': to,
             'isRegister' : val1,
             'timestamp' : str(datetime.now().strftime("%Y%m%d%H%M%S"))
-        } )
+        }] )
     return response
 
 
@@ -51,6 +49,7 @@ def sendLink(to,val1):
     print(response)
     return response
 
+
 @is_not_authenticated
 def login(request):
     if request.method == "GET" :
@@ -60,29 +59,33 @@ def login(request):
         if form.is_valid():
             user = form.cleaned_data['user']
             password = form.cleaned_data['password']
-            table = db.Table('users')
+            table = Table('users')
             if(isValidEmail(user) and isvalidPassword(password)):
                 password=hashlib.sha256((password+SECRET_KEY).encode())
                 password=password.hexdigest()
-                response = table.scan(
-                    FilterExpression=Attr('email').eq(user)
-                )
+                response = table.scan(FilterExpression={'email':user}).values()
+                
                 if response['Count']==0:
                     return render(request,'accounts/login.html',{"err":"Invalid Email address/UserName or Password","user":user})
                 
                 password0 = response['Items'][0]['password']
                 if (password == password0):
+                    table = Table('SessionStore')
+                    tkey = response['Items'][0]['email'] + datetime.now().strftime("%Y%m%d%H%M%S") + SECRET_KEY
+                    tkey = str(hashlib.sha256(tkey.encode()).hexdigest())
+                    table.insertValues(values=[{
+                        "session_key": tkey,
+                        "email":response['Items'][0]['email'],
+                        "timestamp":datetime.now().strftime("%Y%m%d%H%M%S"),
+                        "isVerified":response['Items'][0]['isVerified'],
+                        "isDoctor": 1 if 'isDoctor' in response['Items'][0] else 0,  
+                    }])
+                    request.session['session_key'] = tkey;
                     
-                    request.session['email']= response['Items'][0]['email']
-                    request.session['valid']  = str(datetime.now().strftime("%Y%m%d%H%M%S"))
-                    request.session['isVerified'] = str(response['Items'][0]['isVerified'])
-                    isDoctor = str(int(response['Items'][0]['isDoctor'])) if 'isDoctor' in response['Items'][0] else "0"
-                    request.session['isDoctor'] =isDoctor
-                    tkey =request.session['email'] + str(isDoctor)+ request.session['valid'] + str(request.session['isVerified'] ) + SECRET_KEY
-                    request.session['signature0']  = str(hashlib.sha256(tkey.encode()).hexdigest())
-                    if response['Items'][0]['isVerified'] == "0" :
+                    if response['Items'][0]['isVerified'] == 0 :
                         return HttpResponseRedirect('/accounts/verifyotp/')
-                    if request.session['isDoctor'] == "0" :
+                    
+                    if 'isDoctor' not in response['Items'][0] :
                         return HttpResponse("<H1> Patient HomePage </H1>")
                     return HttpResponse("<H1> Doctor HomePage </H1>")
                     
@@ -107,24 +110,33 @@ def signup(request):
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
             email = form.cleaned_data['email']
-            table = db.Table('users')
+            table = Table('users')
             if(isvalidPassword(password) and isvalidUserName(username) and isValidEmail(email)):
                 password=hashlib.sha256((password+SECRET_KEY).encode())
                 password=password.hexdigest()
-                table.put_item(Item={
+                
+                table.insertValues(values=[{
                     'email':email,
                     'password':password,
                     'username':username,
                     'isVerified':0,
-                })
-                request.session['email']=email
-                request.session['valid']  = str(datetime.now().strftime("%Y%m%d%H%M%S"))
-                request.session['isVerified'] = "0"
-                isDoctor = "0"
-                request.session['isDoctor'] =isDoctor
-                tkey =request.session['email'] + str(isDoctor)+ request.session['valid'] + str(request.session['isVerified']) + SECRET_KEY
-                request.session['signature0']  = str(hashlib.sha256(tkey.encode()).hexdigest())
+                }])
+                
+                table = Table('SessionStore')
+                
+                tkey = email + datetime.now().strftime("%Y%m%d%H%M%S") + SECRET_KEY
+                tkey = str(hashlib.sha256(tkey.encode()).hexdigest())
+                table.insertValues(values=[{
+                    "session_key":tkey,
+                    "email":email,
+                    "timestamp":datetime.now().strftime("%Y%m%d%H%M%S"),
+                    "isVerified" : 0 ,
+                    "isDoctor": 0,  
+                }])
+                request.session['session_key'] = tkey;
+                
                 return HttpResponseRedirect("/accounts/verifyotp/")
+            
             emailerr = usernameerr = passworderr =""
             if (isValidEmail(email)==False):
                 emailerr="Invalid email address"
@@ -132,72 +144,65 @@ def signup(request):
                 passworderr="Invalid Password"
             if (isvalidUserName(username)==False):
                 usernameerr="Invalid UserName"
-
-
-
             print(username+"\t"+password+"\t"+email)
-
-
         return render(request,'accounts/signup.html',{'err':emailerr+'\t'+passworderr+'\t'+usernameerr})
 
 
 @is_authenticated_notverified
 def verifyotp(request):
+    email = getEmail(request.session['session_key'])
     if request.method == "GET":
-        table = db.Table('otp')
+        table = Table('otp')
         response = table.scan(
-            FilterExpression=Attr('email').eq(request.session['email'])
-        )
+            FilterExpression={'email': email}
+        ).values()
+        
         if response['Count'] == 0:
-            pass
-            sendOtp(request.session['email'],1)
+            sendOtp(email,1)
+            
         else:
             for x in response['Items']:
                 date_time = datetime.strptime(x['timestamp'], "%Y%m%d%H%M%S")
                 is4verify = 1 if 'isRegister' in x else 0
                 if datetime.now() > date_time + timedelta(minutes=15):
-                    sendOtp(request.session['email'],1)
-                    table.delete_item(
-                        Key = {
+                    sendOtp(email,1)
+                    table.delete(
+                        FilterExpression = {
                             'otp' : x['otp']
                         }
-                        #FilterExpression=Attr('otp').eq(x['otp'])
                     )
                     break
                 if is4verify == 0 :
-                    sendOtp(request.session['email'],1)
-
+                    sendOtp(email,1)
         return render(request,'accounts/verification.html')
+    
     if request.method == "POST" :
         form = OTPVerificationForm(request.POST)
         if form.is_valid():
             generatedotp = form.cleaned_data['o1']+form.cleaned_data['o2']+form.cleaned_data['o3']+form.cleaned_data['o4']+form.cleaned_data['o5']+form.cleaned_data['o6']
             generatedotp = hashlib.sha256((generatedotp+SECRET_KEY).encode()).hexdigest()
-            table = db.Table('otp')
-            user = request.session['email']
-            key = 'email'
+            table = Table('otp')
             response = table.scan(
-                    FilterExpression=Attr(key).eq(user)
-            )
+                    FilterExpression={'otp': generatedotp}
+            ).values()
+            
             if response['Count']==1:
-
                 if response['Items'][0]['otp'] == generatedotp :
-                    table.delete_item(
-                        Key = {
+                    table.delete(
+                        FilterExpression = {
                             'otp' : generatedotp,
                         }
-                        #FilterExpression=Attr('otp').eq(generatedotp)
                     )
-                    table0 = db.Table('users')
-                    table0.update_item(
-                        Key={
-                            key : user,
+                    
+                    table0 = Table('users')
+                    print("has Updated")
+                    table0.update(
+                        FilterExpression={
+                            'email' : email,
                         },
-                        UpdateExpression='SET isVerified = :val1',
-                        ExpressionAttributeValues={
-                            ':val1': 1
-                        }
+                        UpdateExpression={"isVerified" : 1 ,}, 
                     )
+                    del request.session['session_key']
                     return HttpResponseRedirect('/accounts/login/')
                 return render(request, 'accounts/verification.html',{'err':'OTP not match'})
             return HttpResponseRedirect('/accounts/login/')
@@ -213,18 +218,19 @@ def forgot(request):
         form = FindAccountForm(request.POST)
         if form.is_valid():
             user = form.cleaned_data['user']
-            table = db.Table('users')
+            table = Table('users')
             if(isValidEmail(user)):
                 response = table.scan(
-                    FilterExpression=Attr('email').eq(user)
-                )
+                    FilterExpression={'email':user}
+                ).values()
+                
                 if response['Count'] == 1:
                     timestamp0 = datetime.now().strftime('%Y%m%d%H%M%S')
                     signature = hashlib.sha256((user + timestamp0 + SECRET_KEY).encode()).hexdigest()
-                    table = db.Table('forgototpsignatures')
-                    table.put_item(Item={
+                    table = Table('forgototpsignatures')
+                    table.insertValues(values=[{
                         'signature':signature,
-                    })
+                    }])
 
                     tk = jwt.encode({'email':user,'timestamp':timestamp0,'signature':signature},SECRET_KEY,algorithm='HS256')
                     tk = tk.decode('utf8')
@@ -238,16 +244,12 @@ def forgot(request):
 
         
 
-
+@isDoctor(0)
 def logout(request):
-    if 'email' in request.session:
-        del request.session['email']
-    if 'valid' in request.session:
-        del request.session['valid']
-    if 'isDoctor' in request.session:
-        del request.session['isDoctor']
-    if 'signatue' in request.session:
-        del request.session['signature']
+    if 'session_key' in request.session:
+        table = Table('SessionStore')
+        table.delete(FilterExpression={'session_key':request.session['session_key']})
+        del request.session['session_key']
     return HttpResponse("LOGED OUT")#HttpResponseRedirect('/accounts/login/')
 
 def changePassword(request):
@@ -269,14 +271,16 @@ def changePassword(request):
             genSignature = hashlib.sha256((email+timestamp0+SECRET_KEY).encode()).hexdigest()
             if signature != genSignature :
                 return render(request,'global/400.html')
-            table = db.Table('forgototpsignatures')
+            table = Table('forgototpsignatures')
             resp = table.scan(
-                FilterExpression = Attr('signature').eq(signature) 
-            )
+                FilterExpression = {'signature':signature} 
+            ).values()
+            
             if resp['Count'] != 1 :
                 return render(request,'global/400.html')
             return render(request,'accounts/change_password.html',{'tk' : tk.decode('utf-8')})
         return render(request,'global/400.html')
+    
     if request.method == "POST" :
         form = ChangePasswordForm(request.POST)
         err=""
@@ -305,35 +309,30 @@ def changePassword(request):
                 genSignature = hashlib.sha256((email+timestamp0+SECRET_KEY).encode()).hexdigest()
                 if signature != genSignature :
                     return render(request,'global/400.html')
-                table = db.Table('forgototpsignatures')
+                table = Table('forgototpsignatures')
                 resp = table.scan(
-                    FilterExpression = Attr('signature').eq(signature) 
-                )
+                    FilterExpression = {'signature':signature} 
+                ).values()
                 if resp['Count'] != 1 :
                     return render(request,'global/400.html')
-                table.delete_item(
-                    Key={
-                        'signature':signature,
-                    }
+                table.delete(
+                    FilterExpression = {'signature':signature}
                 )
                 hasedpassword= hashlib.sha256((paswd+SECRET_KEY).encode()).hexdigest()
-                table = db.Table('users')
-                table.update_item(
-                    Key={
-                            'email':email,
-                        },
-                    UpdateExpression='SET password = :val1',
-                    ExpressionAttributeValues={
-                        ':val1': hasedpassword
-                    }
+                table = Table('users')
+                table.update(
+                    FilterExpression={'email':email},
+                    UpdateExpression={'password':hasedpassword},
                 )
                 return HttpResponse("Password Changed Successfully")
-
-
             return render(request,'accounts/change_password.html',{'err':err,'tk':tk})
         return render(request,'accounts/change_password.html',{'err':err})
 
-        
+@isDoctor(0)        
+def uploadDp(request):
+    email = getEmail(request.session['session_key'])
+    if request.method == "GET":
+        return render(request,'accounts/uploadPicture.html')
         
 
 def sendDemoMail(request):
