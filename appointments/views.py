@@ -13,10 +13,6 @@ def doc_home(request):
     email = getEmail(request.session['session_key'])
     print(email)
     response = table.scan(FilterExpression={'doc_id':email}).values()
-    print(request.session)
-    email = getEmail(request.session['session_key'])
-    response = table.scan(FilterExpression={'email':email}).values()
-    print(response)
     items = response['Items']
     print(items)
     c = 1
@@ -42,7 +38,6 @@ def add_slots(request):
         end_time = request.POST['end_time']
         time = request.POST['time']
         fees = request.POST['fees']
-        print(request.POST)
         dow = []
         for d in days:
             string = 'weekday-' + d
@@ -70,10 +65,7 @@ def add_slots(request):
             else:
                 t2 = str(h1) + str(m1) + '0'
             data = table.scan(FilterExpression={'doc_id':email}).values()
-            print(data)
             items = data['Items']
-            # data = table.scan(FilterExpression = Attr('doc_id').eq(email))
-            # items = data['Items']
             l = len(str(email))
             num = 0
             for it in items:
@@ -86,14 +78,14 @@ def add_slots(request):
                 t1 = '0' + t1
             if len(t2) == 3:
                 t2 = '0' + t2
-            Values = [{
+            table.insertValues(values=[{
                 'slotid': num,
                 'doc_id': email,
                 'start_time': t1,
                 'end_time': t2,
                 'fees': fees,
-                'days':dow }]
-            table.insertValues(values=Values)
+                'days':dow }])
+            print(table.scan(FilterExpression={'doc_id':email}).values())
     response = redirect('/appointments/')
     return response
 
