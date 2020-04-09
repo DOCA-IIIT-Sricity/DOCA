@@ -2,30 +2,36 @@
 from pymongo.mongo_client import MongoClient
 import pymongo
 
-def migrate():
-    db = MongoClient().doca
-    
-    tables = [
+tables = [
         {
             "table_name" : "users",
             "id" : "email",
             "constraints" : [
-                "username":"unique"
+                "username" : "unique",
             ]
         },
         {
             "table_name" : "SessionStore",
             'id' : 'session_key',
+            "constraints" : [
+                "foreign_key" : "users",
+            ]
         },
         {
             'table_name' : "otp",
             'id' : 'otp',
+            "constraints": [
+                "foreign_key" : "users",
+            ]
         },
         {
             'table_name' : "forgototpsignatures",
             'id' : 'signature',
         }
     ]
+
+def migrate():
+    db = MongoClient().doca
     
     for table in tables:
         
