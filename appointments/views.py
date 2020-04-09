@@ -13,6 +13,10 @@ def doc_home(request):
     email = getEmail(request.session['session_key'])
     print(email)
     response = table.scan(FilterExpression={'doc_id':email}).values()
+    print(request.session)
+    email = getEmail(request.session['session_key'])
+    response = table.scan(FilterExpression={'email':email}).values()
+    print(response)
     items = response['Items']
     print(items)
     c = 1
