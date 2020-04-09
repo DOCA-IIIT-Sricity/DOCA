@@ -10,7 +10,7 @@ import numpy
 def doc_home(request):
     table = Table('slots')
     email = request.session['email']
-    response = table.scan([FilterExpression={"doc_id":email}, Projection=[]]).values()
+    response = table.scan(FilterExpression={"doc_id":email}, Projection=[]).values()
     print(response)
     items = response['Items']
     c = 1
@@ -64,9 +64,9 @@ def add_slots(request):
                 t2 = str(h1) + str(m1)
             else:
                 t2 = str(h1) + str(m1) + '0'
-            data = table.scan([FilterExpression={"doc_id":email}, Projection=[]]).values()
+            data = table.scan(FilterExpression={"doc_id":email}, Projection=[]).values()
             print(data)
-            items = data[]
+            items = data['Items']
             # data = table.scan(FilterExpression = Attr('doc_id').eq(email))
             # items = data['Items']
             l = len(str(email))
