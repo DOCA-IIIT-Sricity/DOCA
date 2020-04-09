@@ -1,18 +1,17 @@
 from django.shortcuts import render, HttpResponse, redirect
 from accounts.decorators import isDoctor
-from boto3.dynamodb.conditions import Attr
-import boto3
+# from boto3.dynamodb.conditions import Attr
+# import boto3
+from mongodb.mongolib import Table
 import numpy
 
 # Create your views here.
 @isDoctor(1)
 def doc_home(request):
-    dynamodb = boto3.resource('dynamodb')
-    table = dynamodb.Table('Slots')
+    table = Table('slots')
     email = request.session['email']
-    response = table.scan(
-        FilterExpression = Attr('doc_id').eq(email)
-    )
+    response = table.scan([FilterExpression={"doc_id":email}, Projection=[]]).values()
+    print(response)
     items = response['Items']
     c = 1
     print(items)
@@ -28,8 +27,7 @@ def doc_home(request):
 
 @isDoctor(1)
 def add_slots(request):
-    dynamodb = boto3.resource('dynamodb')
-    table = dynamodb.Table('Slots')
+    table = Table('slots')
     email = request.session['email']
     days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
 
@@ -66,8 +64,11 @@ def add_slots(request):
                 t2 = str(h1) + str(m1)
             else:
                 t2 = str(h1) + str(m1) + '0'
-            data = table.scan(FilterExpression = Attr('doc_id').eq(email))
-            items = data['Items']
+            data = table.scan([FilterExpression={"doc_id":email}, Projection=[]]).values()
+            print(data)
+            items = data[]
+            # data = table.scan(FilterExpression = Attr('doc_id').eq(email))
+            # items = data['Items']
             l = len(str(email))
             num = 0
             for it in items:
@@ -80,22 +81,20 @@ def add_slots(request):
                 t1 = '0' + t1
             if len(t2) == 3:
                 t2 = '0' + t2
-            table.put_item(Item={
+            Values = [{
                 'slotid': num,
                 'doc_id': email,
                 'start_time': t1,
                 'end_time': t2,
                 'fees': fees,
-                'days':dow
-            })
-
+                'days':dow }]
+            table.insertValues(values=Values)
     response = redirect('/appointments/')
     return response
 
 @isDoctor(1)
 def del_slots(request):
-    dynamodb = boto3.resource('dynamodb')
-    table = dynamodb.Table('Slots')
+    table = Table('slots')
     email = request.session['email']
 
     list = []
@@ -106,7 +105,7 @@ def del_slots(request):
                 list.append(key)
     print(list)
     for id in list:
-        table.delete_item(Key={
+        table.delete(FilterExpression={
                 'slotid':id
             })
     response = redirect('/appointments/')
