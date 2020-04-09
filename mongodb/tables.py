@@ -27,6 +27,18 @@ tables = [
         {
             'table_name' : "forgototpsignatures",
             'id' : 'signature',
+        },
+        {
+            'table_name' : "slots",
+            'id' : 'slot_id',
+        },
+        {
+            'table_name' : 'slot_available',
+            'id' : 'id',
+        },
+        {
+            'table_name' : 'appointments',
+            'id' : 'app_id',
         }
     ]
 
