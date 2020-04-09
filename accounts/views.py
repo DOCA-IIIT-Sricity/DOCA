@@ -250,7 +250,16 @@ def logout(request):
         table = Table('SessionStore')
         table.delete(FilterExpression={'session_key':request.session['session_key']})
         del request.session['session_key']
-    return HttpResponse("LOGED OUT")#HttpResponseRedirect('/accounts/login/')
+    return HttpResponse("LOGED OUT")
+
+@isDoctor(1)
+def logoutD(request):
+    if 'session_key' in request.session:
+        table = Table('SessionStore')
+        table.delete(FilterExpression={'session_key':request.session['session_key']})
+        del request.session['session_key']
+    return HttpResponse("LOGED OUT")
+#HttpResponseRedirect('/accounts/login/')
 
 def changePassword(request):
     if request.method == "GET":
