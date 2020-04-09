@@ -6,23 +6,23 @@ tables = [
         {
             "table_name" : "users",
             "id" : "email",
-            "constraints" : [
+            "constraints" : {
                 "username" : "unique",
-            ]
+            }
         },
         {
             "table_name" : "SessionStore",
             'id' : 'session_key',
-            "constraints" : [
+            "constraints" : {
                 "foreign_key" : "users",
-            ]
+            }
         },
         {
             'table_name' : "otp",
             'id' : 'otp',
-            "constraints": [
+            "constraints": {
                 "foreign_key" : "users",
-            ]
+            }
         },
         {
             'table_name' : "forgototpsignatures",
