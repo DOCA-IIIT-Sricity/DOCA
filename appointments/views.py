@@ -4,13 +4,14 @@ from accounts.decorators import isDoctor
 # import boto3
 from mongodb.mongolib import Table
 import numpy
+from accounts.decorators import getEmail
 
 # Create your views here.
 @isDoctor(1)
 def doc_home(request):
     table = Table('slots')
     print(request.session)
-    email = request.session['email']
+    email = getEmail(request.session['session_key'])
     response = table.scan(FilterExpression={'email':email}).values()
     print(response)
     items = response['Items']
@@ -29,7 +30,7 @@ def doc_home(request):
 @isDoctor(1)
 def add_slots(request):
     table = Table('slots')
-    email = request.session['email']
+    email = getEmail(request.session['session_key'])
     days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
 
 
@@ -96,7 +97,7 @@ def add_slots(request):
 @isDoctor(1)
 def del_slots(request):
     table = Table('slots')
-    email = request.session['email']
+    email = getEmail(request.session['session_key'])
 
     list = []
     if request.method == 'POST':
