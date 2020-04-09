@@ -4,23 +4,23 @@ from accounts.decorators import isDoctor
 # import boto3
 from mongodb.mongolib import Table
 import numpy
+from accounts.decorators import getEmail
 
 # Create your views here.
 @isDoctor(1)
 def doc_home(request):
     table = Table('slots')
-    print(request.session)
-    email = request.session['email']
-    response = table.scan(FilterExpression={'email':email}).values()
-    print(response)
+    email = getEmail(request.session['session_key'])
+    print(email)
+    response = table.scan(FilterExpression={'doc_id':email}).values()
     items = response['Items']
-    c = 1
     print(items)
+    c = 1
     for item in items:
         item['num'] = c
-        item['start_time'] = item['start_time'][0:2] + ":" + item['start_time'][2:4]
-        item['end_time'] = item['end_time'][0:2] + ":" + item["end_time"][2:4]
-        item['fees'] = item['fees']
+        item['start_time'] = str(item['start_time'][0:2]) + ":" + str(item['start_time'][2:4])
+        item['end_time'] = str(item['end_time'][0:2]) + ":" + str(item["end_time"][2:4])
+        item['fees'] = str(item['fees'])
         c += 1
     return render(request, "appointments/doc_slots.html", {'items':items})
 
@@ -29,7 +29,7 @@ def doc_home(request):
 @isDoctor(1)
 def add_slots(request):
     table = Table('slots')
-    email = request.session['email']
+    email = getEmail(request.session['session_key'])
     days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
 
 
@@ -65,7 +65,7 @@ def add_slots(request):
                 t2 = str(h1) + str(m1)
             else:
                 t2 = str(h1) + str(m1) + '0'
-            data = table.scan().values()
+            data = table.scan(FilterExpression={'doc_id':email}).values()
             print(data)
             items = data['Items']
             # data = table.scan(FilterExpression = Attr('doc_id').eq(email))
@@ -96,7 +96,7 @@ def add_slots(request):
 @isDoctor(1)
 def del_slots(request):
     table = Table('slots')
-    email = request.session['email']
+    email = getEmail(request.session['session_key'])
 
     list = []
     if request.method == 'POST':
