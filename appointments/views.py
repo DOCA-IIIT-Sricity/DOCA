@@ -5,23 +5,30 @@ from accounts.decorators import isDoctor
 from mongodb.mongolib import Table
 import numpy
 from accounts.decorators import getEmail
+import datetime
+import calendar
+import requests
+from faker import Faker 
+import random
+
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 # Create your views here.
 @isDoctor(1)
 def doc_home(request):
     table = Table('slots')
-    print(request.session)
     email = getEmail(request.session['session_key'])
-    response = table.scan(FilterExpression={'email':email}).values()
-    print(response)
+    print(email)
+    response = table.scan(FilterExpression={'doc_id':email}).values()
     items = response['Items']
-    c = 1
     print(items)
+    c = 1
     for item in items:
         item['num'] = c
-        item['start_time'] = item['start_time'][0:2] + ":" + item['start_time'][2:4]
-        item['end_time'] = item['end_time'][0:2] + ":" + item["end_time"][2:4]
-        item['fees'] = item['fees']
+        item['start_time'] = str(item['start_time'][0:2]) + ":" + str(item['start_time'][2:4])
+        item['end_time'] = str(item['end_time'][0:2]) + ":" + str(item["end_time"][2:4])
+        item['fees'] = str(item['fees'])
         c += 1
     return render(request, "appointments/doc_slots.html", {'items':items})
 
@@ -39,7 +46,6 @@ def add_slots(request):
         end_time = request.POST['end_time']
         time = request.POST['time']
         fees = request.POST['fees']
-        print(request.POST)
         dow = []
         for d in days:
             string = 'weekday-' + d
@@ -66,11 +72,8 @@ def add_slots(request):
                 t2 = str(h1) + str(m1)
             else:
                 t2 = str(h1) + str(m1) + '0'
-            data = table.scan().values()
-            print(data)
+            data = table.scan(FilterExpression={'doc_id':email}).values()
             items = data['Items']
-            # data = table.scan(FilterExpression = Attr('doc_id').eq(email))
-            # items = data['Items']
             l = len(str(email))
             num = 0
             for it in items:
@@ -83,15 +86,15 @@ def add_slots(request):
                 t1 = '0' + t1
             if len(t2) == 3:
                 t2 = '0' + t2
-            Values = [{
+            table.insertValues(values=[{
                 'slotid': num,
                 'doc_id': email,
                 'start_time': t1,
                 'end_time': t2,
                 'fees': fees,
-                'days':dow }]
-            table.insertValues(values=Values)
-    response = redirect('/appointments/')
+                'days':dow }])
+            print(table.scan(FilterExpression={'doc_id':email}).values())
+    response = redirect('/appointments/doc_slots/')
     return response
 
 @isDoctor(1)
@@ -112,3 +115,63 @@ def del_slots(request):
             })
     response = redirect('/appointments/')
     return response
+
+def find_day(date):
+    day, month, year = (int(i) for i in date.split(' '))     
+    dayNumber = calendar.weekday(year, month, day) 
+    days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
+    return (days[dayNumber]) 
+
+@isDoctor(0)
+def check_avail(request):
+    if request.method == "POST":
+        city = request.POST['city_name']
+        locality = request.POST['locality']
+        spec = request.POST['spec']
+        date = request.POST['date_app']
+        
+        
+    
+        return render(request, "appointments/pat_book.html", {'doc_info':doc_info})
+    return render(request, "appointments/pat_slots.html")
+
+
+def create_doc(request):
+    table = Table('slots')
+    # table.delete()
+    fake = Faker()
+    for i in range(1,1001):
+        doc = fake.email()
+        lat = str(fake.latitude())
+        lon = str(fake.longitude())
+        fees = random.randint(100, 1000)
+        special = ['Allergists', 'Anesthesiologists', 'Cardiologists', 'Dermatologists', 'Endocrinologists', 
+        'Family Physicians', 'Gastroenterologists', 'Hematologists', 'Infectious Disease Specialists', 'Internists', 
+        'Medical Geneticists', 'Nephrologists', 'Neurologists', 'Obstetricians', 'Gynecologists', 
+        'Oncologists', 'Ophthalmologists', 'Osteopaths', 'Otolaryngologists', 'Pathologists',
+        'Pediatricians', 'Physiatrists', 'Plastic Surgeons', 'Podiatrists', 'Preventive Medicine Specialists', 
+        'Psychiatrists', 'Pulmonologists', 'Radiologists', 'Rheumatologists', 'General Surgeons', 'Urologists']
+        s_rand = random.randint(0, 30)
+        spec = special[s_rand]
+        th1 = random.randint(0,23)
+        th2 = (th1+2)%24
+        t1 = str(th1) + "00"
+        t2 = str(th2) + "00"
+        dow = ['mon', 'tue', 'wed', 'thu', 'fri']
+        r = random.random()
+        if r>=0.8:
+            dow.append('sat')
+        if r>=0.9:
+            dow.append('sun')
+        table.insertValues(values=[{
+                'slotid': i,
+                'doc_id': doc,
+                'spec': spec,
+                'start_time': t1,
+                'end_time': t2,
+                'fees': fees,
+                'days': dow,
+                'lon': lon,
+                'lat': lat}])
+        return HttpResponse("You have generated data")
+
