@@ -3,10 +3,10 @@ from django.db import models
 # Create your models here.
 from mongoengine import *
 
-class slots(DynamicDocument):
+class slots(Document):
     slot_id = models.CharField(max_length=200)
     
-class slots_available(DynamicDocument):
+class slots_available(Document):
     id = models.CharField(max_length=200)
 
 class appointments(Document):

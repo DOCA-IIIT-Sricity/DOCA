@@ -1,12 +1,12 @@
 from rest_framework import serializers
 from .models import slots, slots_available, appointments
 
-class slotsSerializers(serializers.ModelSerializer):
+class slotsSerializers(serializers.Serializer):
     class Meta:
         model = slots
         fields = '__all__'
 
-class slots_availSerializers(serializers.ModelSerializer):
+class slots_availSerializers(serializers.Serializer):
     class Meta:
         model = slots_available
         fields = '__all__'

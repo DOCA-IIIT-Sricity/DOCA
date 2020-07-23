@@ -9,5 +9,5 @@ urlpatterns = [
     path("del/", views.del_slots, name="del_slots"),
     path("patient_slots/", views.check_avail, name="check_avail"),
 
-    # path("create_doc/", views.create_doc, name="create_doc"),
+    path("create_doc/", views.create_doc, name="create_doc"),
 ]

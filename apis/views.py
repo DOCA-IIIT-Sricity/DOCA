@@ -189,7 +189,8 @@ def slots_list(request):
     if request.method == "GET":
         table = Table('slots')
         response = table.scan(FilterExpression={}).values()
-        slots_serializer = slotsSerializers(response, many=True)
+        print(response['Items'])
+        slots_serializer = slotsSerializers(response['Items'], many=True)
         return Response(slots_serializer.data)
         
     elif request.method == 'POST':

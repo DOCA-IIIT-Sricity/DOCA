@@ -135,8 +135,8 @@ def check_avail(request):
 def create_doc(request):
     table = Table('slots')
     table2 = Table('slot_available')
-    # table.delete()
-    # table2.delete()
+    table.delete()
+    table2.delete()
     fake = Faker()
     for i in range(1,1001):
         doc = fake.email()
@@ -162,7 +162,7 @@ def create_doc(request):
         if r>=0.9:
             dow.append('sun')
         table.insertValues(values=[{
-                'slotid': i,
+                'slot_id': str(i),
                 'doc_id': doc,
                 'spec': spec,
                 'start_time': t1,
