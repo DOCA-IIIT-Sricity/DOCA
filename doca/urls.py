@@ -23,5 +23,5 @@ urlpatterns = [
     path('appointments/',include('appointments.urls')),
     path('api/',include('apis.urls')),
     path('prescription/',include('prescription.urls')),
-
+    path('payment/',include('payments.urls')),
 ]

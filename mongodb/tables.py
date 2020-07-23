@@ -54,7 +54,11 @@ tables = [
             "constraints" : {
                 "foreign_key" : "appointments",
             }
-        }
+        },
+        {
+            'table_name' : 'transaction',
+            'id' : 'order_id',
+        },
     ]
 
 def migrate():

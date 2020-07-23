@@ -9,7 +9,7 @@
     {% if error %}
     <h3>{{ error }}</h3>
     {% endif %}
-    <form method = "POST" action="/pay/">
+    <form method = "POST" action="/payment/pay/">
         {% csrf_token %}
         <label for="amount">Amount: </label>
         <input type="number" name="amount" value="100">
