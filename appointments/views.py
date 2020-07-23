@@ -11,9 +11,6 @@ import requests
 from faker import Faker 
 import random
 
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-
 # Create your views here.
 @isDoctor(1)
 def doc_home(request):
@@ -122,23 +119,24 @@ def find_day(date):
     days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
     return (days[dayNumber]) 
 
-@isDoctor(0)
+# @isDoctor(0)
 def check_avail(request):
+    table = Table('slot_available')
     if request.method == "POST":
         city = request.POST['city_name']
         locality = request.POST['locality']
         spec = request.POST['spec']
         date = request.POST['date_app']
-        
-        
-    
-        return render(request, "appointments/pat_book.html", {'doc_info':doc_info})
+        data = table.scan(FilterExpression={'spec':spec}).values()
+        items = data['Items']
+        return render(request, "appointments/pat_book.html", {'items':items})
     return render(request, "appointments/pat_slots.html")
-
 
 def create_doc(request):
     table = Table('slots')
+    table2 = Table('slot_available')
     # table.delete()
+    # table2.delete()
     fake = Faker()
     for i in range(1,1001):
         doc = fake.email()
@@ -165,6 +163,16 @@ def create_doc(request):
             dow.append('sun')
         table.insertValues(values=[{
                 'slotid': i,
+                'doc_id': doc,
+                'spec': spec,
+                'start_time': t1,
+                'end_time': t2,
+                'fees': fees,
+                'days': dow,
+                'lon': lon,
+                'lat': lat}])
+        table2.insertValues(values=[{
+                'id': i,
                 'doc_id': doc,
                 'spec': spec,
                 'start_time': t1,

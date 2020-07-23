@@ -7,7 +7,7 @@ from accounts.verifylib import isValidEmail, isvalidPassword, isvalidUserName
 from accounts.forms import SignupForm
 from mongodb.mongolib import Table
 import jwt
-
+from .serializers import slotsSerializers, slots_availSerializers, appointmentsSerializers
 
 
 register_secret_key = "fvfnh654x#R&^yhvbv@E%#(*gcgf51$@EfdgdhE#^@Rgdhfgdred"
@@ -183,3 +183,19 @@ def register(request):
                     "code": "2",
                     "err":"Invalid request",
                 })
+
+@api_view(['GET', 'POST'])
+def slots_list(request):
+    if request.method == "GET":
+        table = Table('slots')
+        response = table.scan(FilterExpression={}).values()
+        slots_serializer = slotsSerializers(response, many=True)
+        return Response(slots_serializer.data)
+        
+    elif request.method == 'POST':
+        slots_data = JSONParser().parse(request)
+        slots_serializer = slotsSerializers(data=slots_data)
+        if slots_serializer.is_valid():
+            slots_serializer.save()
+            return Response(slots_serializer.data, status=status.HTTP_201_CREATED) 
+        return Response(slots_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
