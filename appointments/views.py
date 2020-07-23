@@ -171,6 +171,7 @@ def create_doc(request):
                 'days': dow,
                 'lon': lon,
                 'lat': lat}])
+
         table2.insertValues(values=[{
                 'id': i,
                 'doc_id': doc,
@@ -181,5 +182,5 @@ def create_doc(request):
                 'days': dow,
                 'lon': lon,
                 'lat': lat}])
-        return HttpResponse("You have generated data")
+    return HttpResponse("You have generated data")
 
