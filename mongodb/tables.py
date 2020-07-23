@@ -39,18 +39,32 @@ tables = [
         {
             'table_name' : 'appointments',
             'id' : 'app_id',
+        },
+        {
+            'table_name' : 'med',
+            'id' : 'med_id',
+        },
+        {
+            'table_name' : 'symp',
+            'id' : 'symp_id',
+        },
+        {
+            'table_name' : 'pres_table',
+            'id' : 'app_id',
+            "constraints" : {
+                "foreign_key" : "appointments",
+            }
         }
     ]
 
 def migrate():
     db = MongoClient().doca
-    
+
     for table in tables:
-        
+
         collist = db.list_collection_names()
         if table['table_name'] not in collist:
             print(table['table_name'])
             myTable = db[table['table_name']]
             if 'id' in table:
                 myTable.create_index([(table['id'], pymongo.ASCENDING)],unique=True)
-            
