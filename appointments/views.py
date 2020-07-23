@@ -8,7 +8,7 @@ from accounts.decorators import getEmail
 import datetime
 import calendar
 import requests
-from faker import Faker 
+from faker import Faker
 import random
 
 from rest_framework.decorators import api_view
@@ -117,10 +117,10 @@ def del_slots(request):
     return response
 
 def find_day(date):
-    day, month, year = (int(i) for i in date.split(' '))     
-    dayNumber = calendar.weekday(year, month, day) 
+    day, month, year = (int(i) for i in date.split(' '))
+    dayNumber = calendar.weekday(year, month, day)
     days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
-    return (days[dayNumber]) 
+    return (days[dayNumber])
 
 @isDoctor(0)
 def check_avail(request):
@@ -129,9 +129,9 @@ def check_avail(request):
         locality = request.POST['locality']
         spec = request.POST['spec']
         date = request.POST['date_app']
-        
-        
-    
+
+
+
         return render(request, "appointments/pat_book.html", {'doc_info':doc_info})
     return render(request, "appointments/pat_slots.html")
 
@@ -145,11 +145,11 @@ def create_doc(request):
         lat = str(fake.latitude())
         lon = str(fake.longitude())
         fees = random.randint(100, 1000)
-        special = ['Allergists', 'Anesthesiologists', 'Cardiologists', 'Dermatologists', 'Endocrinologists', 
-        'Family Physicians', 'Gastroenterologists', 'Hematologists', 'Infectious Disease Specialists', 'Internists', 
-        'Medical Geneticists', 'Nephrologists', 'Neurologists', 'Obstetricians', 'Gynecologists', 
+        special = ['Allergists', 'Anesthesiologists', 'Cardiologists', 'Dermatologists', 'Endocrinologists',
+        'Family Physicians', 'Gastroenterologists', 'Hematologists', 'Infectious Disease Specialists', 'Internists',
+        'Medical Geneticists', 'Nephrologists', 'Neurologists', 'Obstetricians', 'Gynecologists',
         'Oncologists', 'Ophthalmologists', 'Osteopaths', 'Otolaryngologists', 'Pathologists',
-        'Pediatricians', 'Physiatrists', 'Plastic Surgeons', 'Podiatrists', 'Preventive Medicine Specialists', 
+        'Pediatricians', 'Physiatrists', 'Plastic Surgeons', 'Podiatrists', 'Preventive Medicine Specialists',
         'Psychiatrists', 'Pulmonologists', 'Radiologists', 'Rheumatologists', 'General Surgeons', 'Urologists']
         s_rand = random.randint(0, 30)
         spec = special[s_rand]
@@ -174,4 +174,3 @@ def create_doc(request):
                 'lon': lon,
                 'lat': lat}])
         return HttpResponse("You have generated data")
-
