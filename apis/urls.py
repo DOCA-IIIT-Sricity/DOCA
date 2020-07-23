@@ -6,6 +6,8 @@ urlpatterns = [
     path('primaryToken/',views.getPrimaryToken),
     path('register/',views.register),
     path('slots/', views.slots_list),
-    path('slots/<slug:spec>/', views.slots_spec),
-    path('appointment/', views.appoint_list),
+    path('appointments/', views.appoint_list),
+    path('med/', views.med_list),
+    path('symp/', views.symp_list),
+    path('pres_table/', views.pres_table_list),
 ]

@@ -51,9 +51,6 @@ tables = [
         {
             'table_name' : 'pres_table',
             'id' : 'app_id',
-            "constraints" : {
-                "foreign_key" : "appointments",
-            }
         }
     ]
 
