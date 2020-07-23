@@ -42,7 +42,41 @@ def isDoctor(isDoctor=0):
         return wrapper_function
     return is_authenticated
 
+def isAuthenticated(request):
+    def is_authenticated(function):
+        def wrapper_function(*args,**kwargs):
+            if'session_key' in args[0].session:
+                session_key = args[0].session['session_key']
+                table = Table("SessionStore") 
+                response = table.scan(FilterExpression={
+                    'session_key':session_key,
+                    },   
+                ).values()
+                
+                if response['Count'] == 0:
+                    return HttpResponseRedirect('/accounts/login/')
+                
+                isDoctor0 = response['Items'][0]['isDoctor']
+                isVerified = response['Items'][0]['isVerified']
+                timestamp = response['Items'][0]['timestamp']
+                email = response['Items'][0]['email']
 
+                if (isVerified == 0) :
+                    return HttpResponseRedirect('/accounts/verifyotp/')
+                
+                if (datetime.strptime(timestamp,"%Y%m%d%H%M%S")+timedelta(days=7) < datetime.now()):
+                    table.delete(FilterExpression={'session_key':args[0].session['session_key']})
+                    del args[0].session['session_key']
+                    return HttpResponseRedirect("/accounts/login/")
+                    
+               
+                if (isDoctor0 == isDoctor):
+                    return function(*args,**kwargs)
+                    
+                    
+            return HttpResponseRedirect("/accounts/login/")
+        return wrapper_function
+    return is_authenticated
 
 def is_not_authenticated(function):
     def wrapper_function(*args,**kwargs):

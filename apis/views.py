@@ -1,5 +1,6 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from django.http.response import JsonResponse
 from doca.settings import SECRET_KEY, SECRET_KEY2
 import hashlib
 from datetime import datetime, timedelta
@@ -7,8 +8,8 @@ from accounts.verifylib import isValidEmail, isvalidPassword, isvalidUserName
 from accounts.forms import SignupForm
 from mongodb.mongolib import Table
 import jwt
-from .serializers import slotsSerializers, slots_availSerializers, appointmentsSerializers
-
+import json
+from django.shortcuts import HttpResponse
 
 register_secret_key = "fvfnh654x#R&^yhvbv@E%#(*gcgf51$@EfdgdhE#^@Rgdhfgdred"
 
@@ -184,19 +185,113 @@ def register(request):
                     "err":"Invalid request",
                 })
 
-@api_view(['GET', 'POST'])
+@api_view(['GET', 'POST', 'DELETE'])
 def slots_list(request):
+    table = Table('slots')
+    res = table.scan(FilterExpression={}).values()
+    # print(res['Items'][:10], type(res), type(res['Items']))
     if request.method == "GET":
-        table = Table('slots')
-        response = table.scan(FilterExpression={}).values()
-        print(response['Items'])
-        slots_serializer = slotsSerializers(response['Items'], many=True)
-        return Response(slots_serializer.data)
+        # print(res['Items'][:10], type(res), type(res['Items']))
+        for i in res['Items']:
+            i['_id'] = str(i['_id'])
+        return Response(res)
+
+    elif request.method == 'POST':
+        slots_data = request.data
+        # print(slots_data)
+        d1 = table.scan(FilterExpression={'doc_id':slots_data['doc_id'], 'spec':slots_data['spec'], 'lon':slots_data['lon'], 'lat':slots_data['lat']}).values()
+        if d1['Count'] == 0:
+            for i in res['Items']:
+                sid = i['slot_id']
+            sid = int(sid) + 1
+            table.insertValues(values=[{
+                    'slot_id': str(sid),
+                    'doc_id': slots_data['doc_id'],
+                    'spec' :slots_data['spec'],
+                    'start_time': slots_data['start_time'],
+                    'end_time': slots_data['end_time'],
+                    'fees': slots_data['fees'],
+                    'days':slots_data['days'],
+                    'lon': slots_data['lon'],
+                    'lat': slots_data['lat']}])
+            return HttpResponse("Added new value")
+        else:
+            for item in d1['Items']:
+                sst = int(slots_data['start_time'])
+                snt = int(slots_data['end_time'])
+                ist = int(item['start_time'])
+                iet = int(item['end_time'])
+                if ist < sst < iet:
+                    return HttpResponse("New slot can't be created due to clashing of slot times")
+                elif ist < snt < iet:
+                    return HttpResponse("New slot can't be created due to clashing of slot times")
+                elif (sst == ist) & (snt == iet):
+                     return HttpResponse("New slot can't be created due to clashing of slot times")
+                else:
+                    for id in res['Items']:
+                        print(id, type(id))
+                        sid = id['slot_id']
+                    sid = int(sid) + 1
+                    table.insertValues(values=[{
+                            'slot_id': str(sid),
+                            'doc_id': slots_data['doc_id'],
+                            'spec' :slots_data['spec'],
+                            'start_time': slots_data['start_time'],
+                            'end_time': slots_data['end_time'],
+                            'fees': slots_data['fees'],
+                            'days':slots_data['days'],
+                            'lon': slots_data['lon'],
+                            'lat': slots_data['lat']}])
+                    return HttpResponse("Added new value")
+        
+    elif request.method == "DELETE":
+        id = request.data
+        table.delete(FilterExpression={'slot_id':id['slot_id']})
+        return HttpResponse("Deleted that slot id")
+
+@api_view(['GET'])
+def slots_spec(request, spec):
+    table = Table('slots')
+    if request.method == "GET":
+        if spec:
+            res = table.scan(FilterExpression={'spec':spec}).values()
+        for i in res['Items']:
+            i['_id'] = str(i['_id'])
+    return Response(res)
+
+@api_view(['GET', 'POST'])
+def appoint_list(request):
+    table = Table('appointments')
+    res = table.scan(FilterExpression={}).values()
+    if request.method == "GET":
+        for i in res['Items']:
+            i['_id'] = str(i['_id'])
+        return Response(res)
         
     elif request.method == 'POST':
-        slots_data = JSONParser().parse(request)
-        slots_serializer = slotsSerializers(data=slots_data)
-        if slots_serializer.is_valid():
-            slots_serializer.save()
-            return Response(slots_serializer.data, status=status.HTTP_201_CREATED) 
-        return Response(slots_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        appoint_data = request.data
+        if appoint_data['method'] == 'get_appointments':
+            res = table.scan(FilterExpression={'doc_id':appoint_data['doc_id']}).values()
+            for i in res['Items']:
+                i['_id'] = str(i['_id'])
+            return Response(res)    
+        elif appoint_data['method'] == 'add_appointments':
+            for id in res['Items']:
+                print(id, type(id))
+                aid = id['slot_id']
+            aid = int(aid) + 1
+            table.insertValues(values=[{
+                    'app_id': str(aid),
+                    'doc_id': slots_data['doc_id'],
+                    'spec' :slots_data['spec'],
+                    'pat_id':appoint_data['pat_id'],
+                    'start_time': slots_data['start_time'],
+                    'end_time': slots_data['end_time'],
+                    'fees': slots_data['fees'],
+                    'days':slots_data['days'],
+                    'lon': slots_data['lon'],
+                    'lat': slots_data['lat']}])
+            return HttpResponse("Added Appointments")
+        elif appoint_data['method'] == 'del_appointments':
+            table.delete(FilterExpression={'app_id':appoint_data['app_id']})
+            return HttpResponse("Deleted that slot id")

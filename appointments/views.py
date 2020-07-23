@@ -59,7 +59,7 @@ def add_slots(request):
                 t1 = str(h1) + str(m1)
             else:
                 t1 = str(h1) + str(m1) + '0'
-            m1 = m1 + time
+            m1 = int(m1) + int(time)
             if m1 >= 60:
                 m1 = m1 - 60
                 h1 += 1
@@ -84,7 +84,7 @@ def add_slots(request):
             if len(t2) == 3:
                 t2 = '0' + t2
             table.insertValues(values=[{
-                'slotid': num,
+                'slot_id': num,
                 'doc_id': email,
                 'start_time': t1,
                 'end_time': t2,
@@ -144,11 +144,11 @@ def create_doc(request):
         lon = str(fake.longitude())
         fees = random.randint(100, 1000)
         special = ['Allergists', 'Anesthesiologists', 'Cardiologists', 'Dermatologists', 'Endocrinologists', 
-        'Family Physicians', 'Gastroenterologists', 'Hematologists', 'Infectious Disease Specialists', 'Internists', 
-        'Medical Geneticists', 'Nephrologists', 'Neurologists', 'Obstetricians', 'Gynecologists', 
+        'FamilyPhysicians', 'Gastroenterologists', 'Hematologists', 'InfectiousDiseaseSpecialists', 'Internists', 
+        'MedicalGeneticists', 'Nephrologists', 'Neurologists', 'Obstetricians', 'Gynecologists', 
         'Oncologists', 'Ophthalmologists', 'Osteopaths', 'Otolaryngologists', 'Pathologists',
-        'Pediatricians', 'Physiatrists', 'Plastic Surgeons', 'Podiatrists', 'Preventive Medicine Specialists', 
-        'Psychiatrists', 'Pulmonologists', 'Radiologists', 'Rheumatologists', 'General Surgeons', 'Urologists']
+        'Pediatricians', 'Physiatrists', 'PlasticSurgeons', 'Podiatrists', 'PreventiveMedicineSpecialists', 
+        'Psychiatrists', 'Pulmonologists', 'Radiologists', 'Rheumatologists', 'GeneralSurgeons', 'Urologists']
         s_rand = random.randint(0, 30)
         spec = special[s_rand]
         th1 = random.randint(0,23)
@@ -168,7 +168,7 @@ def create_doc(request):
                 'start_time': t1,
                 'end_time': t2,
                 'fees': fees,
-                'days': dow,
+                # 'days': dow,
                 'lon': lon,
                 'lat': lat}])
 
