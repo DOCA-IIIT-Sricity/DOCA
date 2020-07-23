@@ -63,4 +63,4 @@ def apply(request):
     "Veterinarian",
     "Palliative Care Specialist",
     ]
-    return render(request, 'applyasdoctor.html')
+    return render(request, 'accounts/applyasdoctor.html')
