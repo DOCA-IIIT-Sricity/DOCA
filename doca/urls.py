@@ -21,6 +21,7 @@ urlpatterns = [
     path('accounts/',include('accounts.urls')),
     path('doctor/',include('Doctors.urls')),
     path('appointments/',include('appointments.urls')),
+    path('book/',include('book_app.urls')),
     path('api/',include('apis.urls')),
-
+    
 ]

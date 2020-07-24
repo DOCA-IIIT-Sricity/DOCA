@@ -183,3 +183,43 @@ def register(request):
                     "code": "2",
                     "err":"Invalid request",
                 })
+    
+    
+@api_view(['GET'])
+def getSpecialization(request):
+    if 'spec' in request.GET:
+        table = Table('Specilizations')
+        spec0 =  request.GET['spec']
+        specs = table.scan().values()['Items']
+        res = []
+        for spec1 in specs:
+            if spec0.lower() in spec1['spec'].lower():
+                res.append(
+                    spec1['spec'],
+                )
+        return Response({
+            "code":0,
+            "results":res,
+        })
+    return Response({"code":"404","message":"invalid request"})
+
+@api_view(['GET'])
+def getCities(request):
+    if 'city' in request.GET:
+        table = Table('Cities')
+        spec0 =  request.GET['city']
+        specs = table.scan().sort("city_id")['Items']
+        res = []
+        for spec1 in specs:
+            if spec0.lower() in spec1['city'].lower():
+                res.append(
+                    {"city":spec1['city'],"state":spec1['state']}
+                )
+        return Response({
+            "code":0,
+            "results":res,
+        })
+    return Response({"code":"404","message":"invalid request"})
+    
+    
+    

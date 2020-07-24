@@ -1,0 +1,77 @@
+[{
+        "spec_id": 1,
+        "spec": "Family Physician"
+    },
+    {
+        "spec_id": 2,
+        "spec": "Internal Medicine Physician"
+    },
+    {
+        "spec_id": 3,
+        "spec": "Pediatrician"
+    },
+    {
+        "spec_id": 4,
+        "spec": "Surgeon"
+    },
+    {
+        "spec_id": 5,
+        "spec": "Gynecologist"
+    },
+    {
+        "spec_id": 6,
+        "spec": "Psychiatrist"
+    },
+    {
+        "spec_id": 7,
+        "spec": "Cardiologist"
+    },
+    {
+        "spec_id": 8,
+        "spec": "Dermatologist"
+    },
+    {
+        "spec_id": 9,
+        "spec": "Endocrinologist"
+    },
+    {
+        "spec_id": 10,
+        "spec": "Gastroenterologist"
+    },
+    {
+        "spec_id": 11,
+        "spec": "Infectious Disease Physician"
+    },
+    {
+        "spec_id": 12,
+        "spec": "Nephrologist"
+    },
+    {
+        "spec_id": 13,
+        "spec": "Ophthalmologist"
+    },
+    {
+        "spec_id": 14,
+        "spec": "Otolaryngologist"
+    },
+    {
+        "spec_id": 15,
+        "spec": "Pulmonologist"
+    },
+    {
+        "spec_id": 16,
+        "spec": "Neurologist"
+    },
+    {
+        "spec_id": 17,
+        "spec": "Radiologist"
+    },
+    {
+        "spec_id": 18,
+        "spec": "Anesthesiologist"
+    },
+    {
+        "spec_id": 19,
+        "spec": "Oncologit"
+    }
+]

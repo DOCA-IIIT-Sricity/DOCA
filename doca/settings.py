@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     'accounts',
     'rest_framework',
     'corsheaders',
+    'book_app',
+    #'channels',
 ]
 
 
@@ -79,7 +81,8 @@ TEMPLATES = [
         },
     },
 ]
-WSGI_APPLICATION = 'doca.wsgi.application'
+ASGI_APPLICATION = 'doca.asgi.application'
+
 
 
 # Database

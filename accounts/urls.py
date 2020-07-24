@@ -10,6 +10,6 @@ urlpatterns = [
     path('logoutd/',views.logoutD),
     path('dmail/',views.sendDemoMail),
     path('changepassword/',views.changePassword),
-    path('uploadDp/',views.uploadDp)
-    
+    path('uploadDp/',views.uploadDp),
+    path('apply/',views.apply)
 ]
