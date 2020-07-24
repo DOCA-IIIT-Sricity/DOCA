@@ -5,7 +5,7 @@ from accounts.decorators import isDoctor
 from mongodb.mongolib import Table
 import numpy
 from accounts.decorators import getEmail
-import datetime
+import datetime import date
 import calendar
 import requests
 from faker import Faker
@@ -56,23 +56,23 @@ def add_slots(request):
             string = 'weekday-' + d
             if string in request.POST.keys():
                 dow.append(d)
-            data = table.scan(FilterExpression={}).values()
-            items = data['Items']
-            num = 0
-            for it in items:
-                c = int(it['slot_id'])
-                if (c>num):
-                    num = c
-            num += 1
-            num = str(num)
-            table.insertValues(values=[{
-                'slot_id': num,
-                'doc_id': email,
-                'start_time': st_time,
-                'end_time': end_time,
-                'fees': fees,
-                'days':dow }])
-            print(table.scan(FilterExpression={'doc_id':email}).values())
+        data = table.scan(FilterExpression={}).values()
+        items = data['Items']
+        num = 0
+        for it in items:
+            c = int(it['slot_id'])
+            if (c>num):
+                num = c
+        num += 1
+        num = str(num)
+        table.insertValues(values=[{
+            'slot_id': num,
+            'doc_id': email,
+            'start_time': st_time,
+            'end_time': end_time,
+            'fees': fees,
+            'days':dow }])
+        print(table.scan(FilterExpression={'doc_id':email}).values())
     response = redirect('/appointments/doc_slots/')
     return response
 
@@ -182,7 +182,7 @@ def appoint(request):
                     'end_time': end_time,
                     'fees': fees,
                     'date':'30072020' }])
-            # return render(request, "prescription/", {'app_id':str(num)})
+            # return render(request, "p/", {'app_id':str(num)})
             return HttpResponse("Appointment Added")
         else:
             for item in d1['Items']:
@@ -218,11 +218,11 @@ def create_doc(request):
         lat = str(fake.latitude())
         lon = str(fake.longitude())
         fees = random.randint(100, 1000)
-        special = ['Allergists', 'Anesthesiologists', 'Cardiologists', 'Dermatologists', 'Endocrinologists', 
-        'FamilyPhysicians', 'Gastroenterologists', 'Hematologists', 'InfectiousDiseaseSpecialists', 'Internists', 
-        'MedicalGeneticists', 'Nephrologists', 'Neurologists', 'Obstetricians', 'Gynecologists', 
+        special = ['Allergists', 'Anesthesiologists', 'Cardiologists', 'Dermatologists', 'Endocrinologists',
+        'FamilyPhysicians', 'Gastroenterologists', 'Hematologists', 'InfectiousDiseaseSpecialists', 'Internists',
+        'MedicalGeneticists', 'Nephrologists', 'Neurologists', 'Obstetricians', 'Gynecologists',
         'Oncologists', 'Ophthalmologists', 'Osteopaths', 'Otolaryngologists', 'Pathologists',
-        'Pediatricians', 'Physiatrists', 'PlasticSurgeons', 'Podiatrists', 'PreventiveMedicineSpecialists', 
+        'Pediatricians', 'Physiatrists', 'PlasticSurgeons', 'Podiatrists', 'PreventiveMedicineSpecialists',
         'Psychiatrists', 'Pulmonologists', 'Radiologists', 'Rheumatologists', 'GeneralSurgeons', 'Urologists']
         s_rand = random.randint(0, 30)
         spec = special[s_rand]
@@ -247,3 +247,11 @@ def create_doc(request):
                 'lon': lon,
                 'lat': lat}])
     return HttpResponse("You have generated data")
+@isDoctor(1)
+def dashboard(request):
+    email = getEmail(request.session['session_key'])
+    date = str(date.today())
+    today = date[8:10]+date[5:7]+date[0:4]
+    table = Table('appointments')
+    result = table.scan(FilterExpression={'date':today,'doc_id':email}).values()
+    return render(request,'appointments/dashboard.html',{'app' : result['Items']})
