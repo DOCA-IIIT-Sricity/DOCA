@@ -24,10 +24,11 @@
             <div class="col"></div>
         </div>
             {% for item in doc_info %}
-                <form action="{% url "appointments:appoint" %}">
+                <form action="{% url "appointments:appoint" %}" method="post">
                     {% csrf_token %}
                     <div class="row">
                         <div class="col" style="width:500px">{{ item.doc_id }}</div>
+                        <input type="hidden" name="slot_id" value="{{ item.slot_id }}" readonly>
                         <div class="col" style="width:100px">{{ item.spec }}</div>
                         <div class="col" style="width:100px">{{ item.start_time }}</div>
                         <div class="col" style="width:100px">{{ item.end_time }}</div>

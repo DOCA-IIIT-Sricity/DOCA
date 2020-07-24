@@ -227,196 +227,201 @@ def getCities(request):
 
 @api_view(['GET', 'POST'])
 def slots_list(request):
-    table = Table('slots')
-    res = table.scan(FilterExpression={}).values()
-    if request.method == "GET":
-        for i in res['Items']:
-            i['_id'] = str(i['_id'])
-        return Response(res)
-
-    elif request.method == 'POST':
-        slots_data = request.data
-        # print(slots_data)
-        if slots_data['method'] == "get_slots":
-            res = table.scan(FilterExpression={'spec':slots_data['spec']}).values()
+    if is_authenticated != 0:
+        table = Table('slots')
+        res = table.scan(FilterExpression={}).values()
+        if request.method == "GET":
             for i in res['Items']:
                 i['_id'] = str(i['_id'])
             return Response(res)
 
-        elif slots_data['method'] == "add_slots":
-            d1 = table.scan(FilterExpression={'doc_id':slots_data['doc_id'], 'spec':slots_data['spec'], 'lon':slots_data['lon'], 'lat':slots_data['lat']}).values()
-            if d1['Count'] == 0:
+        elif request.method == 'POST':
+            slots_data = request.data
+            # print(slots_data)
+            if slots_data['method'] == "get_slots":
+                res = table.scan(FilterExpression={'spec':slots_data['spec']}).values()
                 for i in res['Items']:
-                    sid = i['slot_id']
-                sid = int(sid) + 1
-                table.insertValues(values=[{
-                        'slot_id': str(sid),
-                        'doc_id': slots_data['doc_id'],
-                        'spec' :slots_data['spec'],
-                        'start_time': slots_data['start_time'],
-                        'end_time': slots_data['end_time'],
-                        'fees': slots_data['fees'],
-                        'days':slots_data['days'],
-                        'lon': slots_data['lon'],
-                        'lat': slots_data['lat']}])
-                return HttpResponse("Added new value")
-            else:
-                for item in d1['Items']:
-                    sst = int(slots_data['start_time'])
-                    snt = int(slots_data['end_time'])
-                    ist = int(item['start_time'])
-                    iet = int(item['end_time'])
-                    if ist < sst < iet:
-                        return HttpResponse("New slot can't be created due to clashing of slot times")
-                    elif ist < snt < iet:
-                        return HttpResponse("New slot can't be created due to clashing of slot times")
-                    elif (sst == ist) & (snt == iet):
-                        return HttpResponse("New slot can't be created due to clashing of slot times")
-                    else:
-                        for id in res['Items']:
-                            # print(id, type(id))
-                            sid = id['slot_id']
-                        sid = int(sid) + 1
-                        table.insertValues(values=[{
-                                'slot_id': str(sid),
-                                'doc_id': slots_data['doc_id'],
-                                'spec' :slots_data['spec'],
-                                'start_time': slots_data['start_time'],
-                                'end_time': slots_data['end_time'],
-                                'fees': slots_data['fees'],
-                                'days':slots_data['days'],
-                                'lon': slots_data['lon'],
-                                'lat': slots_data['lat']}])
-                        return HttpResponse("Added new value")
+                    i['_id'] = str(i['_id'])
+                return Response(res)
 
-        
-        elif slots_data['method'] == "delete_slots":
-            table.delete(FilterExpression={'slot_id':slots_data['slot_id']})
-            return HttpResponse("Deleted that slot id")
+            elif slots_data['method'] == "add_slots":
+                d1 = table.scan(FilterExpression={'doc_id':slots_data['doc_id'], 'spec':slots_data['spec'], 'lon':slots_data['lon'], 'lat':slots_data['lat']}).values()
+                if d1['Count'] == 0:
+                    for i in res['Items']:
+                        sid = i['slot_id']
+                    sid = int(sid) + 1
+                    table.insertValues(values=[{
+                            'slot_id': str(sid),
+                            'doc_id': slots_data['doc_id'],
+                            'spec' :slots_data['spec'],
+                            'start_time': slots_data['start_time'],
+                            'end_time': slots_data['end_time'],
+                            'fees': slots_data['fees'],
+                            'days':slots_data['days'],
+                            'lon': slots_data['lon'],
+                            'lat': slots_data['lat']}])
+                    return HttpResponse("Added new value")
+                else:
+                    for item in d1['Items']:
+                        sst = int(slots_data['start_time'])
+                        snt = int(slots_data['end_time'])
+                        ist = int(item['start_time'])
+                        iet = int(item['end_time'])
+                        if ist < sst < iet:
+                            return HttpResponse("New slot can't be created due to clashing of slot times")
+                        elif ist < snt < iet:
+                            return HttpResponse("New slot can't be created due to clashing of slot times")
+                        elif (sst == ist) & (snt == iet):
+                            return HttpResponse("New slot can't be created due to clashing of slot times")
+                        else:
+                            for id in res['Items']:
+                                # print(id, type(id))
+                                sid = id['slot_id']
+                            sid = int(sid) + 1
+                            table.insertValues(values=[{
+                                    'slot_id': str(sid),
+                                    'doc_id': slots_data['doc_id'],
+                                    'spec' :slots_data['spec'],
+                                    'start_time': slots_data['start_time'],
+                                    'end_time': slots_data['end_time'],
+                                    'fees': slots_data['fees'],
+                                    'days':slots_data['days'],
+                                    'lon': slots_data['lon'],
+                                    'lat': slots_data['lat']}])
+                            return HttpResponse("Added new value")
+
+            
+            elif slots_data['method'] == "delete_slots":
+                table.delete(FilterExpression={'slot_id':slots_data['slot_id']})
+                return HttpResponse("Deleted that slot id")
 
 
 @api_view(['GET', 'POST'])
 def appoint_list(request):
-    table = Table('appointments')
-    res = table.scan(FilterExpression={}).values()
-    if request.method == "GET":
-        for i in res['Items']:
-            i['_id'] = str(i['_id'])
-        return Response(res)
-        
-    elif request.method == 'POST':
-        appoint_data = request.data
-        if appoint_data['method'] == 'get_appointments':
-            res = table.scan(FilterExpression={'doc_id':appoint_data['doc_id']}).values()
+    if is_authenticated != 0:
+        table = Table('appointments')
+        res = table.scan(FilterExpression={}).values()
+        if request.method == "GET":
             for i in res['Items']:
                 i['_id'] = str(i['_id'])
-            return Response(res)    
-        elif appoint_data['method'] == 'add_appointments':
-            for id in res['Items']:
-                # print(id, type(id))
-                aid = id['app_id']
-            aid = int(aid) + 1
-            table.insertValues(values=[{
-                    'app_id': str(aid),
-                    'doc_id': appoint_data['doc_id'],
-                    'spec' :appoint_data['spec'],
-                    'pat_id':appoint_data['pat_id'],
-                    'start_time': appoint_data['start_time'],
-                    'end_time': appoint_data['end_time'],
-                    'fees': appoint_data['fees'],
-                    'date':appoint_data['date']}])
-            return HttpResponse("Added Appointments")
-        elif appoint_data['method'] == 'delete_appointments':
-            table.delete(FilterExpression={'app_id':appoint_data['app_id']})
-            return HttpResponse("Deleted that slot id")
+            return Response(res)
+            
+        elif request.method == 'POST':
+            appoint_data = request.data
+            if appoint_data['method'] == 'get_appointments':
+                res = table.scan(FilterExpression={'doc_id':appoint_data['doc_id']}).values()
+                for i in res['Items']:
+                    i['_id'] = str(i['_id'])
+                return Response(res)    
+            elif appoint_data['method'] == 'add_appointments':
+                for id in res['Items']:
+                    # print(id, type(id))
+                    aid = id['app_id']
+                aid = int(aid) + 1
+                table.insertValues(values=[{
+                        'app_id': str(aid),
+                        'doc_id': appoint_data['doc_id'],
+                        'spec' :appoint_data['spec'],
+                        'pat_id':appoint_data['pat_id'],
+                        'start_time': appoint_data['start_time'],
+                        'end_time': appoint_data['end_time'],
+                        'fees': appoint_data['fees'],
+                        'date':appoint_data['date']}])
+                return HttpResponse("Added Appointments")
+            elif appoint_data['method'] == 'delete_appointments':
+                table.delete(FilterExpression={'app_id':appoint_data['app_id']})
+                return HttpResponse("Deleted that slot id")
 
 @api_view(['GET', 'POST'])
 def med_list(request):
-    table = Table('med')
-    res = table.scan(FilterExpression={}).values()
-    if request.method == "GET":
-        for i in res['Items']:
-            i['_id'] = str(i['_id'])
-        return Response(res)
-        
-    elif request.method == 'POST':
-        med_data = request.data
-        if med_data['method'] == 'get_medications':
-            res = table.scan(FilterExpression={'med_id':med_data['med_id']}).values()
+    if is_authenticated != 0:
+        table = Table('med')
+        res = table.scan(FilterExpression={}).values()
+        if request.method == "GET":
             for i in res['Items']:
                 i['_id'] = str(i['_id'])
-            return Response(res)    
-        elif med_data['method'] == 'add_medications':
-            for id in res['Items']:
-                # print(id, type(id))
-                mid = id['med_id']
-            mid = int(mid) + 1
-            table.insertValues(values=[{
-                    'med_id': str(mid),
-                    'med': med_data['med']}])
-            return HttpResponse("Added Medicines")
-        elif med_data['method'] == 'delete_medcations':
-            table.delete(FilterExpression={'med_id':med_data['med_id']})
-            return HttpResponse("Deleted that slot id")
+            return Response(res)
+            
+        elif request.method == 'POST':
+            med_data = request.data
+            if med_data['method'] == 'get_medications':
+                res = table.scan(FilterExpression={'med_id':med_data['med_id']}).values()
+                for i in res['Items']:
+                    i['_id'] = str(i['_id'])
+                return Response(res)    
+            elif med_data['method'] == 'add_medications':
+                for id in res['Items']:
+                    # print(id, type(id))
+                    mid = id['med_id']
+                mid = int(mid) + 1
+                table.insertValues(values=[{
+                        'med_id': str(mid),
+                        'med': med_data['med']}])
+                return HttpResponse("Added Medicines")
+            elif med_data['method'] == 'delete_medcations':
+                table.delete(FilterExpression={'med_id':med_data['med_id']})
+                return HttpResponse("Deleted that slot id")
 
 @api_view(['GET', 'POST'])
 def symp_list(request):
-    table = Table('symp')
-    res = table.scan(FilterExpression={}).values()
-    if request.method == "GET":
-        for i in res['Items']:
-            i['_id'] = str(i['_id'])
-        return Response(res)
-        
-    elif request.method == 'POST':
-        symp_data = request.data
-        if symp_data['method'] == 'get_symptoms':
-            res = table.scan(FilterExpression={'symp_id':symp_data['symp_id']}).values()
+    if is_authenticated != 0:
+        table = Table('symp')
+        res = table.scan(FilterExpression={}).values()
+        if request.method == "GET":
             for i in res['Items']:
                 i['_id'] = str(i['_id'])
-            return Response(res)    
-        elif symp_data['method'] == 'add_symptoms':
-            for id in res['Items']:
-                # print(id, type(id))
-                sid = id['symp_id']
-            sid = int(sid) + 1
-            table.insertValues(values=[{
-                    'symp_id': str(sid),
-                    'symp': symp_data['symp']}])
-            return HttpResponse("Added Symptoms")
-        elif symp_data['method'] == 'delete_symptoms':
-            table.delete(FilterExpression={'symp_id':symp_data['symp_id']})
-            return HttpResponse("Deleted that slot id")
+            return Response(res)
+            
+        elif request.method == 'POST':
+            symp_data = request.data
+            if symp_data['method'] == 'get_symptoms':
+                res = table.scan(FilterExpression={'symp_id':symp_data['symp_id']}).values()
+                for i in res['Items']:
+                    i['_id'] = str(i['_id'])
+                return Response(res)    
+            elif symp_data['method'] == 'add_symptoms':
+                for id in res['Items']:
+                    # print(id, type(id))
+                    sid = id['symp_id']
+                sid = int(sid) + 1
+                table.insertValues(values=[{
+                        'symp_id': str(sid),
+                        'symp': symp_data['symp']}])
+                return HttpResponse("Added Symptoms")
+            elif symp_data['method'] == 'delete_symptoms':
+                table.delete(FilterExpression={'symp_id':symp_data['symp_id']})
+                return HttpResponse("Deleted that slot id")
 
 @api_view(['GET', 'POST'])
 def pres_table_list(request):
-    table = Table('pres_table')
-    res = table.scan(FilterExpression={}).values()
-    if request.method == "GET":
-        for i in res['Items']:
-            i['_id'] = str(i['_id'])
-        return Response(res)
-        
-    elif request.method == 'POST':
-        pres_table_data = request.data
-        if pres_table_data['method'] == 'get_prescriptions':
-            res = table.scan(FilterExpression={'app_id':pres_table_data['app_id']}).values()
+    if is_authenticated != 0:
+        table = Table('pres_table')
+        res = table.scan(FilterExpression={}).values()
+        if request.method == "GET":
             for i in res['Items']:
                 i['_id'] = str(i['_id'])
-            return Response(res)    
-        elif pres_table_data['method'] == 'add_prescriptions':
-            for id in res['Items']:
-                # print(id, type(id))
-                pid = id['app_id']
-            pid = int(pid) + 1
-            table.insertValues(values=[{
-                    'app_id': str(pid),
-                    'doc_id': pres_table_data['doc_id'],
-                    'pat_id':pres_table_data['pat_id'],
-                    'symptoms': pres_table_data['symptoms'],
-                    'notes': pres_table_data['notes'],
-                    'tabs': pres_table_data['tabs']}])
-            return HttpResponse("Added prescription")
-        elif pres_table_data['method'] == 'delete_prescriptions':
-            table.delete(FilterExpression={'app_id':pres_table_data['app_id']})
-            return HttpResponse("Deleted that slot id")
+            return Response(res)
+            
+        elif request.method == 'POST':
+            pres_table_data = request.data
+            if pres_table_data['method'] == 'get_prescriptions':
+                res = table.scan(FilterExpression={'app_id':pres_table_data['app_id']}).values()
+                for i in res['Items']:
+                    i['_id'] = str(i['_id'])
+                return Response(res)    
+            elif pres_table_data['method'] == 'add_prescriptions':
+                for id in res['Items']:
+                    # print(id, type(id))
+                    pid = id['app_id']
+                pid = int(pid) + 1
+                table.insertValues(values=[{
+                        'app_id': str(pid),
+                        'doc_id': pres_table_data['doc_id'],
+                        'pat_id':pres_table_data['pat_id'],
+                        'symptoms': pres_table_data['symptoms'],
+                        'notes': pres_table_data['notes'],
+                        'tabs': pres_table_data['tabs']}])
+                return HttpResponse("Added prescription")
+            elif pres_table_data['method'] == 'delete_prescriptions':
+                table.delete(FilterExpression={'app_id':pres_table_data['app_id']})
+                return HttpResponse("Deleted that slot id")
