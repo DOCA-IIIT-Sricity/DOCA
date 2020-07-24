@@ -51,7 +51,8 @@ tables = [
         {
             'table_name' : 'Specilizations',
             'id':'spec_id'
-        }
+        },
+        {
             'table_name' : 'med',
             'id' : 'med_id',
         },
