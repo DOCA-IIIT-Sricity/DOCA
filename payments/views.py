@@ -5,27 +5,37 @@ from .models import Transaction
 from . import paytm
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
+from mongodb.mongolib import Table
+import datetime
 Merchant_key = settings.PAYTM_SECRET_KEY
 
 def initiate_payment(request):
     if request.method == "POST":
         amount = int(request.POST['amount'])
-        user = request.user
-        transaction = Transaction.objects.create(made_by=user, amount=amount)
-        transaction.save()
+        user = request.user.username
+        made_on = datetime.datetime.utcnow()
+        order_id = made_on.strftime('PAY2ME%Y%m%d_%H%M%S')
+        table = Table('transaction')
+        table.insertValues(values=[{
+            'order_id': order_id,
+            'made_by' : user,
+            'amount' : amount,
+        }])
+        # transaction = Transaction.objects.create(made_by=user, amount=amount)
+        # transaction.save()
         merchant_key = settings.PAYTM_SECRET_KEY
 
         param_dict = (
             ('MID', settings.PAYTM_MERCHANT_ID),
-            ('ORDER_ID', str(transaction.order_id)),
-            ('CUST_ID', str(transaction.made_by.email)),
-            ('TXN_AMOUNT', str(transaction.amount)),
+            ('ORDER_ID', str(table.scan().values()['Items'][-1]['order_id'])),
+            ('CUST_ID', str(table.scan().values()['Items'][-1]['made_by'])),
+            ('TXN_AMOUNT', str(table.scan().values()['Items'][-1]['amount'])),
             ('CHANNEL_ID', settings.PAYTM_CHANNEL_ID),
             ('WEBSITE', settings.PAYTM_WEBSITE),
             # ('EMAIL', request.user.email),
             # ('MOBILE_N0', '9911223388'),
             ('INDUSTRY_TYPE_ID', settings.PAYTM_INDUSTRY_TYPE_ID),
-            ('CALLBACK_URL', 'http://127.0.0.1:8000/callback/'),
+            ('CALLBACK_URL', 'http://127.0.0.1:8000/payment/callback/'),
             # ('PAYMENT_MODE_ONLY', 'NO'),
         )
         param_dict = dict(param_dict)

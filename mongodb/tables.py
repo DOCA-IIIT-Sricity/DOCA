@@ -51,7 +51,15 @@ tables = [
         {
             'table_name' : 'pres_table',
             'id' : 'app_id',
-        }
+        },
+        {
+            'table_name' : 'transaction',
+            'id' : 'order_id',
+        },
+        {
+            'table_name' : 'transaction',
+            'id' : 'order_id',
+        },
     ]
 
 def migrate():
