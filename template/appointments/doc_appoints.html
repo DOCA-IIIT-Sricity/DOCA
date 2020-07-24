@@ -1,0 +1,61 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/doc_slots.css' %}">
+</head>
+<body>
+    <div class="container" style="padding-top: 7%">
+        <div class="row">
+            <div class="col"></div>
+            <div class="col">S.No</div>
+            <div class="col">Doctor Name</div>
+            <div class="col">Specification</div>
+            <div class="col">Start Time</div>
+            <div class="col">End Time</div>
+            <div class="col">Cost</div>
+            <div class="col">Date</div>
+        </div>
+        {% if doc_info %}
+            <form action="{% url 'appointments:del_slots' %}" method="post">
+            {% csrf_token %}
+            {% for item in items %}
+            <div class="row">
+                <div class="col"><input type="checkbox" name="{{ item.app_id }}" id="{{ item.app_id }}"></div>
+                <div class="col">{{ item.app_id }}</div>
+                <div class="col">{{ item.doc_id }}</div>
+                <div class="col">{{ item.spec }}</div>
+                <div class="col">{{ item.start_time }}</div>
+                <div class="col">{{ item.end_time }}</div>
+                <div class="col">{{ item.fees }}</div>
+                <div class="col">{{ item.date }}</div>
+            </div>
+            {% endfor %}
+            <div class="row">
+                <div class="col"><button type="submit" class="btn btn-danger">Delete</button></div>
+                <div class="col"></div>
+                <div class="col"></div>
+                <div class="col"></div>
+                <div class="col"></div>
+                <div class="col"></div>
+                <div class="col"></div>
+                <div class="col"></div>
+            </div>
+            </form>
+        {% else %}
+            <div class="row">
+                <div class="col">No doctors available</div>
+            </div>
+        {% endif %}
+    </div>
+
+
+</body>
+</html>

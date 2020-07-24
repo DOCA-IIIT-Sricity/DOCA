@@ -16,28 +16,59 @@
 
             .filter {
                 display:inline-block;
-                color:#444;
-                border:1px solid #CCC;
-                background:#DDD;
+                color:white;
+                background:#172B4D;
                 box-shadow: 0 0 5px -1px rgba(0,0,0,0.2);
                 cursor:pointer;
                 vertical-align:middle;
+                padding: 3px;
                 /* max-width:; */
-                padding: 5px;
-                text-align: center;
+                border-radius : 4px;
+                width : relative;
+                padding-bottom : 5px;
             }
             .filter:active {
                 color:red;
                 box-shadow: 0 0 5px -1px rgba(0,0,0,0.6);
             }
+            .filter2{
+              text-align : center;
+              padding-right : 10px;
+              font-size:12px;
+            }
             .w3-container{
-                padding-left : 0px !important; 
+                padding-left : 0px !important;
             }
-            .form-control{
-                width : 20% !important;
+            .raise:hover,
+            .raise:focus {
+              box-shadow: 0 0.5em 0.5em -0.4em var(--hover);
+              transform: translateY(-0.25em);
             }
-            #symptoms{
-                width : 100% !important;
+            .dissymp{
+              display:inline-block;
+              padding-right : 7px;
+            }
+            .modal_inp{
+              padding:7px;
+            }
+            #button1{
+              border-radius: 5px;
+            }
+            #body{
+              margin-left :100px;
+              margin-top : 70px;
+              margin-right : 100px;
+              margin-bottom : 50px;
+            }
+            #displaysym{
+              margin-left : 230px;
+              padding-bottom : 15px;
+            }
+            #modal{
+              margin : auto;
+              width : 40%;
+              padding:40px;
+              border-radius: 10px;
             }
         </style>
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -47,41 +78,43 @@
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     </head>
-    
-<body class="jumbotron">
+
+<body id ="body">
+  <h1 style="padding-bottom:30px;">prescription</h1>
     <form method = "POST" action = "{% url 'prescription:index' %}">
         {% csrf_token %}
-        <div class="form-group">
-            <div class="form-row">
-                <label for="symptoms" class="">Symptoms :</label>
-                <div>
+        <div>
+            <div class="form-group row">
+                <label for="symptoms" class="col-sm-2 col-form-label" style="padding-right:0px!important"><span>Symptoms :</span></label>
+                <div class="col-sm-2" >
                     <input type="text" class="form-control" id = "symptoms" name="symptom" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onkeyup="myFunction(event)">
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <div  id = "dis_sym" style="max-height: 200px !important;overflow:auto;"></div>
+                      <div id = "dis_sym"></div>
                     </div>
                 </div>
-                &nbsp;&nbsp;<button type="button" class="btn btn-outline-primary" onclick="addsymp()">add</button>
+                <button id="button1" class="btn base-button btn-outline-success" type="button" onclick="addsymp()">add</button>
             </div>
-        </div>
+          </div>
+
         <div id="displaysym"></div>
-        <div class="form-group">
-            <div class="form-row">
-                <label for="dis_notes" class="">Notes :</label>
-                <input type="textarea" class="form-control" name="dis_notes" id="dis_notes">
+            <div class="form-group row">
+                <label for="dis_notes" class="col-sm-2 col-form-label">Notes :</label>
+                <div class="col-sm-2">
+                <textarea class="form-control" name="dis_notes" id="dis_notes" rows="3"></textarea>
+              </div>
             </div>
-        </div> 
-        
+
         <input type="hidden" name="pres_symp" id="hidden_symp">
         <input type="hidden" name="pres_med" id="hidden_med">
         </div>
         <hr>
         <div class="w3-container">
-            <button type="button" onclick="document.getElementById('id01').style.display='block'" class="">add medication</button>
+            <button type="button" class="btn base-button btn-outline-success" onclick="document.getElementById('id01').style.display='block'" >add medication</button>
         <table id="myTable">
             <tr>
-                <th>medicine</th>
+                <th>recipe</th>
                 <th>dosage</th>
-                <th>frequency</th>
+                <th>Signature</th>
                 <th>note</th>
             </tr>
         </table></div>
@@ -91,33 +124,36 @@
     <div id="id01" class="w3-modal">
         <form name="addmed" id="modal_form">
             {% csrf_token %}
-            <div class="w3-modal-content" style="padding:40px; ">
-                <header class="w3-container"> 
-                <span onclick="document.getElementById('id01').style.display='none'" 
+            <div id="modal" class="w3-modal-content">
+                <header class="w3-container">
+                <span onclick="document.getElementById('id01').style.display='none'"
                 class="w3-button w3-display-topright">&times;</span>
                     <div id="modal_err"></div>
-                    <div class="form-group">
-                        <label for="tabname" class="col-sm-2">medicine</label>
-                        <div>
+                    <div class="form-group row modal_inp">
+                        <label for="tabname" class="col-sm-2 col-form-label">recipe</label>
+                        <div class="col-sm-5">
                             <input type="text" class="form-control" id = "tabname" name="tab" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onkeyup="myFunction2(event)">
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <div  id = "dis_med" style="max-height: 200px !important;overflow:auto;"></div>
+                                <div  id = "dis_med" style="max-height: 200px !important;overflow:auto;max-width: 300px !important"></div>
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="dose" class="col-sm-2">dosage</label>
-                        <input type="text" name = 'dos' id="dose" required>
+                    <div class="form-group row modal_inp">
+                        <label for="dose" class="col-sm-2 col-form-label">dosage</label>
+                        <div class="col-sm-5">
+                        <input type="text" name = 'dos' id="dose" class="form-control" required></div>
                     </div>
-                    <div class="form-group">
-                        <label for="freq" class="col-sm-2">frequency</label>
-                        <input type="text" name="frequency" id="freq" required>
+                    <div class="form-group row modal_inp">
+                        <label for="freq" class="col-sm-2 col-form-label">Signature</label>
+                        <div class="col-sm-5">
+                        <input type="text" name="frequency" id="freq" class="form-control" required></div>
                     </div>
-                    <div class="form-group">
-                        <label for="note" class="col-sm-2">note</label>
-                        <input type="text" name="note" id="note">
+                    <div class="form-group row modal_inp">
+                        <label for="note" class="col-sm-2 col-form-label">note</label>
+                        <div class="col-sm-5">
+                        <textarea name="note" id="note" class="form-control" rows="2"></textarea></div>
                     </div>
-                    
+
                     <button type="button" onclick = "saving()">add medication</button>
             </div>
         </form>
@@ -218,36 +254,37 @@
     var div_count = 0;
 
     function addsymp(){
-        if(Symptoms.value == null || Symptoms.value === ''){
+        if(Symptoms.value == null || Symptoms.value === ' ' || Symptoms.value == ''){
             alert('enter valid input');
             return;
         }
         var symptom = $("#symptoms").val();
         symptom_list.push(symptom)
 
-        $('<div/>', {
+        $('<div class="dissymp"/>', {
         id:   'div' + div_count++
-        }).append('<span class="filter" onmouseover="flip(this)" onclick="removesymp(this);">'+symptom_list[symptom_list.length-1]+'</span>').appendTo($('#displaysym'));
+      }).append('<span class="filter raise" onclick="removesymp(this);"><span class="filter2">'+symptom_list[symptom_list.length-1]+'</span><i style="float:right;padding-right:4px;padding-top:3px;font-size:12px;">x</i></span>').appendTo($('#displaysym'));
         document.getElementById('symptoms').value='';
         document.getElementById('hidden_symp').value = JSON.stringify(symptom_list)
     }
 
 
     // function flip(elem){
-    //     
+    //
     //     // var child_div = div.firstElementChild
     //     // child_div.classList.toggle('btn btn-danger');
     // }
 
     function removesymp(elem){
-        var div = document.getElementById(elem.parentNode.id);
+        var div = document.getElementById(elem.parentNode.parentNode.id);
         var sudharshan = div.firstElementChild.innerHTML;
         var index = symptom_list.findIndex(function(item) {return item == sudharshan})
-        symptom_list.splice(index, 1)
+        symptom_list.splice(index, 1);
+        div = div.firstElementChild;
         div.remove();
     }
   </script>
 
-    
+
 </body>
 </html>

@@ -50,6 +50,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'book_app',
     #'channels',
+    'prescription',
+    'payments',
 ]
 
 
@@ -136,3 +138,10 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
+
+
+PAYTM_MERCHANT_ID = 'MjqrKs61592413623123'
+PAYTM_SECRET_KEY = 'K&IOsD4yHGnGck9V'
+PAYTM_WEBSITE = 'WEBSTAGING'
+PAYTM_CHANNEL_ID = 'WEB'
+PAYTM_INDUSTRY_TYPE_ID = 'Retail'

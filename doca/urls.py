@@ -24,4 +24,6 @@ urlpatterns = [
     path('book/',include('book_app.urls')),
     path('api/',include('apis.urls')),
     
+    path('prescription/',include('prescription.urls')),
+    path('payment/',include('payments.urls')),
 ]
