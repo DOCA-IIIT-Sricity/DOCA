@@ -137,6 +137,7 @@ def check_avail(request):
         locality = request.POST['locality']
         spec = request.POST['spec']
         date = request.POST['date_app']
+
         info = table.scan(FilterExpression={'spec':spec}).sort("start_time")
         doc_info = info['Items']
         print(info)
@@ -147,35 +148,46 @@ def check_avail(request):
 # @isDoctor(0)
 def appoint(request):
     table = Table('appointments')
+    table2 = Table('slots')
     data = table.scan(FilterExpression={}).values()
     # email = getEmail(request.session['session_key'])
+    # print(data)
+    # print(request.POST['slot_id'])
     email = "lushaank@gmail.com"
     if request.method == "POST":
         num = 0
         items = data['Items']
         for it in items:
-            c = int(it['slotid'])
+            c = int(it['app_id'])
             if (c>num):
                 num = c
         num += 1
-        d1 = table.scan(FilterExpression={'doc_id':request.POST['doc_id'], 'spec':request.POST['spec'], 'pat_id':email, 'start_time':request.POST['start_time'], 'end_time':request.POST['end_time']}).values()
-        print(request.POST)
+        # print(num)
+        d = table2.scan(FilterExpression={'slot_id':request.POST['slot_id']}).values()
+        for it in d['Items']:
+            print(it)
+            doc_id = it['doc_id']
+            spec = it['spec']
+            start_time = it['start_time']
+            end_time = it['end_time']
+            fees = it['fees']
+        d1 = table.scan(FilterExpression={'doc_id':doc_id, 'spec':spec, 'pat_id':email, 'start_time':start_time, 'end_time':end_time}).values()
         if d1['Count'] == 0:
             table.insertValues(values=[{
                     'app_id': str(num),
-                    'doc_id': request.POST['doc_id'],
-                    'spec' :request.POST['spec'],
+                    'doc_id': doc_id,
+                    'spec': spec,
                     'pat_id':email,
-                    'start_time': request.POST['start_time'],
-                    'end_time': request.POST['end_time'],
-                    'fees': request.POST['fees'],
+                    'start_time': start_time,
+                    'end_time': end_time,
+                    'fees': fees,
                     'date':'30072020' }])
             # return render(request, "prescription/", {'app_id':str(num)})
             return HttpResponse("Appointment Added")
         else:
             for item in d1['Items']:
-                sst = int(request.POST['start_time'])
-                snt = int(request.POST['end_time'])
+                sst = int(start_time)
+                snt = int(end_time)
                 ist = int(item['start_time'])
                 iet = int(item['end_time'])
                 if ist < sst < iet:
@@ -187,12 +199,12 @@ def appoint(request):
                 else:
                     table.insertValues(values=[{
                         'app_id': str(num),
-                        'doc_id': request.POST['doc_id'],
-                        'spec' :request.POST['spec'],
+                        'doc_id': doc_id,
+                        'spec': spec,
                         'pat_id':email,
-                        'start_time': request.POST['start_time'],
-                        'end_time': request.POST['end_time'],
-                        'fees': request.POST['fees'],
+                        'start_time': start_time,
+                        'end_time': end_time,
+                        'fees': fees,
                         'date':'30072020' }])
                     return HttpResponse("Appointment Added")
 
