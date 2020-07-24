@@ -145,10 +145,10 @@ def appoint(request):
     table = Table('appointments')
     table2 = Table('slots')
     data = table.scan(FilterExpression={}).values()
-    # email = getEmail(request.session['session_key'])
+    email = getEmail(request.session['session_key'])
     # print(data)
     # print(request.POST['slot_id'])
-    email = "lushaank@gmail.com"
+    # email = "lushaank@gmail.com"
     if request.method == "POST":
         num = 0
         items = data['Items']
