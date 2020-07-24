@@ -26,7 +26,7 @@
             {% csrf_token %}
             {% for item in items %}
             <div class="row">
-                <div class="col"><input type="checkbox" name="{{ item.slotid }}" id="{{ item.slotid }}"></div>
+                <div class="col"><input type="checkbox" name="{{ item.slot_id }}" id="{{ item.slot_id }}"></div>
                 <div class="col">{{ item.num }}</div>
                 <div class="col">{{ item.start_time }}</div>
                 <div class="col">{{ item.end_time }}</div>
@@ -81,7 +81,7 @@
             {% endfor %}
             {% endif %}
             <div class="row">
-                 <div class="col"><button type="submit" class="btn btn-danger">Delete</button></div>
+                <div class="col"><button type="submit" class="btn btn-danger">Delete</button></div>
                 <div class="col"></div>
                 <div class="col"></div>
                 <div class="col"></div>

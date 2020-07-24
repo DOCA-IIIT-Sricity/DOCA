@@ -15,6 +15,12 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 # Create your views here.
+def find_day(date):
+    day, month, year = (int(i) for i in date.split(' '))
+    dayNumber = calendar.weekday(year, month, day)
+    days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
+    return (days[dayNumber])
+
 @isDoctor(1)
 def doc_home(request):
     table = Table('slots')
@@ -72,16 +78,15 @@ def add_slots(request):
                 t2 = str(h1) + str(m1)
             else:
                 t2 = str(h1) + str(m1) + '0'
-            data = table.scan(FilterExpression={'doc_id':email}).values()
+            data = table.scan(FilterExpression={}).values()
             items = data['Items']
-            l = len(str(email))
             num = 0
             for it in items:
-                c = int(it['slotid'][l:])
+                c = int(it['slot_id'])
                 if (c>num):
                     num = c
             num += 1
-            num = email + str(num)
+            num = str(num)
             if len(t1) == 3:
                 t1 = '0' + t1
             if len(t2) == 3:
@@ -111,34 +116,117 @@ def del_slots(request):
     print(list)
     for id in list:
         table.delete(FilterExpression={
-                'slotid':id
+                'slot_id':id
             })
     response = redirect('/appointments/')
     return response
 
-def find_day(date):
-    day, month, year = (int(i) for i in date.split(' '))
-    dayNumber = calendar.weekday(year, month, day)
-    days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
-    return (days[dayNumber])
+@isDoctor(1)
+def check_appointments(request):
+    table = Table('appointments')
+    email = getEmail(request.session['session_key'])
+    response = table.scan(FilterExpression={'doc_id':email}).values()
+    items = response['Items']
+    c = 1
+    for item in items:
+        item['num'] = c
+        item['start_time'] = str(item['start_time'][0:2]) + ":" + str(item['start_time'][2:4])
+        item['end_time'] = str(item['end_time'][0:2]) + ":" + str(item["end_time"][2:4])
+        item['fees'] = str(item['fees'])
+        c += 1
+    return render(request, "appointments/doc_appoints.html", {'items':items})
 
-@isDoctor(0)
+@isDoctor(1)
+def cancel_appointments(request):
+    table = Table('appointments')
+
+    list = []
+    if request.method == 'POST':
+        # print(request.POST)
+        for key, val in request.POST.items():
+            if val == 'on':
+                list.append(key)
+    print(list)
+    for id in list:
+        table.delete(FilterExpression={
+                'app_id':id
+            })
+    response = redirect('/appointments/check_app/')
+    return response
+
+
+# @isDoctor(0)
 def check_avail(request):
     if request.method == "POST":
+        table = Table('slots')
         city = request.POST['city_name']
         locality = request.POST['locality']
         spec = request.POST['spec']
         date = request.POST['date_app']
-
-
-
+        info = table.scan(FilterExpression={'spec':spec}).sort("start_time")
+        doc_info = info['Items']
+        print(info)
         return render(request, "appointments/pat_book.html", {'doc_info':doc_info})
-    return render(request, "appointments/pat_slots.html")
+    else:
+        return render(request, "appointments/pat_slots.html")
+
+# @isDoctor(0)
+def appoint(request):
+    table = Table('appointments')
+    data = table.scan(FilterExpression={}).values()
+    # email = getEmail(request.session['session_key'])
+    email = "lushaank@gmail.com"
+    if request.method == "POST":
+        num = 0
+        items = data['Items']
+        for it in items:
+            c = int(it['slotid'])
+            if (c>num):
+                num = c
+        num += 1
+        d1 = table.scan(FilterExpression={'doc_id':request.POST['doc_id'], 'spec':request.POST['spec'], 'pat_id':email, 'start_time':request.POST['start_time'], 'end_time':request.POST['end_time']}).values()
+        print(request.POST)
+        if d1['Count'] == 0:
+            table.insertValues(values=[{
+                    'app_id': str(num),
+                    'doc_id': request.POST['doc_id'],
+                    'spec' :request.POST['spec'],
+                    'pat_id':email,
+                    'start_time': request.POST['start_time'],
+                    'end_time': request.POST['end_time'],
+                    'fees': request.POST['fees'],
+                    'date':'30072020' }])
+            # return render(request, "prescription/", {'app_id':str(num)})
+            return HttpResponse("Appointment Added")
+        else:
+            for item in d1['Items']:
+                sst = int(request.POST['start_time'])
+                snt = int(request.POST['end_time'])
+                ist = int(item['start_time'])
+                iet = int(item['end_time'])
+                if ist < sst < iet:
+                    return HttpResponse("New appointment can't be created due to clashing of appointment times")
+                elif ist < snt < iet:
+                    return HttpResponse("New appointment can't be created due to clashing of appointment times")
+                elif (sst == ist) & (snt == iet):
+                    return HttpResponse("New appointment can't be created due to clashing of appointment times")
+                else:
+                    table.insertValues(values=[{
+                        'app_id': str(num),
+                        'doc_id': request.POST['doc_id'],
+                        'spec' :request.POST['spec'],
+                        'pat_id':email,
+                        'start_time': request.POST['start_time'],
+                        'end_time': request.POST['end_time'],
+                        'fees': request.POST['fees'],
+                        'date':'30072020' }])
+                    return HttpResponse("Appointment Added")
+                
 
 
 def create_doc(request):
     table = Table('slots')
-    # table.delete()
+    table.delete()
     fake = Faker()
     for i in range(1,1001):
         doc = fake.email()
@@ -164,7 +252,7 @@ def create_doc(request):
         if r>=0.9:
             dow.append('sun')
         table.insertValues(values=[{
-                'slotid': i,
+                'slot_id': str(i),
                 'doc_id': doc,
                 'spec': spec,
                 'start_time': t1,
@@ -173,4 +261,4 @@ def create_doc(request):
                 # 'days': dow,
                 'lon': lon,
                 'lat': lat}])
-        return HttpResponse("You have generated data")
+    return HttpResponse("You have generated data")
