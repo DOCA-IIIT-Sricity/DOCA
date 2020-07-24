@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOCA</title>
+    <style>
+        .nav-mid {
+            display: inline-block;
+        }
+
+        .nav-mid .product-tab {
+            display: inline-block;
+            min-width: 112px;
+            margin-right: 20px;
+            padding: 22px 0 9px;
+        }
+
+        .nav-mid .product-tab__title {
+            font-size: 16px;
+            line-height: 20px;
+            font-weight: bold;
+            color: #2d2d32;
+            letter-spacing: -0.3px;
+        }
+
+        .nav-mid .product-tab__subtitle {
+            font-size: 12px;
+            line-height: 18px;
+            color: #787887;
+            letter-spacing: -0.1px;
+        }
+
+        .main-menu-left {
+            float: left;
+        }
+
+        .nav-right {
+            float: right;
+            padding: 20px 0 19px;
+        }
+
+        .nav-items:last-child {
+            margin-right: 0px;
+        }
+
+        .border1g {
+            border: 0.5px solid grey;
+            height: 40px;
+        }
+
+        .nav-login {
+            font-size: 13px;
+            line-height: 13px;
+            color: #787887 !important;
+            border-radius: 4px;
+            border: solid 1px #d3d3d3;
+            padding: 8px 10px;
+        }
+
+        .btn-border {
+            display: inline-block;
+            border-radius: 3px;
+            border: 1px solid #414146;
+            background-color: transparent;
+            padding: 5px 20px;
+            cursor: pointer;
+            color: #414146 !important;
+        }
+
+        .m-t-100 {
+            margin-top: 100px;
+        }
+
+        .iconSpan {
+            font-size: 16px;
+            position: absolute;
+            top: 50%;
+            left: 16px;
+            width: 20px;
+            transform: translateY(-50%);
+        }
+
+        .main-heading {
+            font-weight: bold;
+            color: #2d2d32;
+            letter-spacing: -0.3px;
+        }
+
+        .items {
+            width: 100%;
+            margin: 0px auto;
+            margin-top: 20px
+        }
+
+        .slick-slide {
+            margin: 10px
+        }
+
+        .slick-slide img {
+            width: 100%;
+            border: 0px solid #fff
+        }
+
+        .u-font--16 {
+            font-size: 16;
+        }
+
+        .u-font--14 {
+            font-size: 14;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic|Roboto+Mono:400,500|Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="../../static/css/all.min.css">
+    <link rel="stylesheet" href="../../static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../static/css/slick.css">
+    <link rel="stylesheet" href="../../static/css/slick-theme.css">
+    <link rel="stylesheet" href="../static/css/magnific-popup.css">
+    <link rel="stylesheet" href="../../static/css/mainmenu.css">
+    <link rel="stylesheet" href="../../static/css/main2.css">
+    <link rel="stylesheet" href="../../static/css/main.css">
+    <link rel="stylesheet" href="../../static/css/responsive.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/kenwheeler/slick@1.8.1/slick/slick-theme.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+
+</head>
+
+<body>
+
+    <header id="header-area" class="sticky">
+        <div class="main-menu-area">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-2 col-md-2 col-sm-2">
+                        <div class="logo" style="margin-top:8px;">
+                            <a href="index.html" style="font-size: 25px;"><img src="../../static/img/logodark.png" alt="">DOCA</a>
+                        </div>
+                    </div>
+                    <div class="col-lg-10 col-md-10 col-sm-10">
+                        <div class="main-menu-left">
+
+                            <nav style="display: block;">
+                                <div class="nav-mid">
+                                    <div class="product-tab">
+                                        <a class="nav-interact" event="Nav:Interacted:Book an appointment" href="https://www.practo.com/doctors" title="book">
+                                            <div class="product-tab__title">Doctors</div>
+                                            <div class="product-tab__subtitle">Book an appointment</div>
+                                        </a>
+                                    </div>
+                                    <div class="product-tab">
+                                        <a class="nav-interact" event="Nav:Interacted:Chat with doctor" href="https://www.practo.com/consult" title="chat">
+                                            <div class="product-tab__title">Chat</div>
+                                            <div class="product-tab__subtitle">Chat with top doctors</div>
+                                        </a>
+                                    </div>
+                                    <div class="product-tab">
+                                        <a class="nav-interact" event="Nav:Interacted:Order medicines" href="https://www.practo.com/order/?utm_source=practonavbar&amp;utm_medium=referral&amp;utm_campaign=practonavbarredirect" title="medicines">
+                                            <div class="product-tab__title">Pharmacy</div>
+                                            <div class="product-tab__subtitle">Medicines &amp; health products</div>
+                                        </a>
+                                    </div>
+                                    <div class="product-tab">
+                                        <a class="nav-interact" event="Nav:Interacted:Book diagnostic tests" href="https://www.practo.com/tests" title="tests">
+                                            <div class="product-tab__title">Appointment</div>
+                                            <div class="product-tab__subtitle">Manage your appointments</div>
+                                        </a>
+                                    </div>
+
+                                </div>
+
+                            </nav>
+                        </div>
+                        <div class="nav-right text-right">
+                            <div class="nav-items">
+                                <span>
+                                <a href="www.google.com" class="btn-border nav-login nav-interact ">Logout</a>
+                            </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12">
+                        <div class="mobile-menu"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="container">
+        {% block content %}
+        {% endblock %}
+    </div>
+    <section class="widget-area section-padding">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 col-md-6 w-bottom">
+                    <div class="about-us">
+                        <img class="bottom" src="../../static/img/logodark.png" alt="">
+                        <span class="heading">DOCA</span>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Harum quibusdam ullam, blanditiis magnam dolores.</p>
+                    </div>
+                    <div class="about-social">
+                        <h5>Stay connected</h5>
+                        <ul>
+                            <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+                            <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                            <li><a href="#"><i class="fab fa-google-plus-g"></i></a></li>
+                            <li><a href="#"><i class="fab fa-linkedin"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 w-bottom">
+                    <div class="f-widget-title">
+                        <h4>our service</h4>
+                    </div>
+                    <div class="categories">
+                        <div class="row">
+                              <div class="col-lg-6">
+                                  <ul>
+                                      <li><a href="#"><i class="fas fa-angle-right"></i>Cardiology</a></li>
+                                      <li><a href="#"><i class="fas fa-angle-right"></i>Neurology</a></li>
+                                      <li><a href="#"><i class="fas fa-angle-right"></i>Traumatology</a></li>
+                                      <li><a href="#"><i class="fas fa-angle-right"></i>Dental</a></li>
+                                      <li><a href="#"><i class="fas fa-angle-right"></i>Pregnancy</a></li>
+                                  </ul>
+                              </div>
+                              <div class="col-lg-6">
+                                  <ul>
+                                      <li><a href="#"><i class="fas fa-angle-right"></i>Appointment</a></li>
+                                      <li><a href="#"><i class="fas fa-angle-right"></i>Neurology</a></li>
+                                      <li><a href="#"><i class="fas fa-angle-right"></i>Physiotherapists</a></li>
+                                      <li><a href="#"><i class="fas fa-angle-right"></i>Laboratory</a></li>
+                                      <li><a href="#"><i class="fas fa-angle-right"></i>Health Topics</a></li>
+                                  </ul>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="col-lg-4 col-md-6 w-bottom">
+                      <div class="f-widget-title">
+                          <h4>Newsletter</h4>
+                      </div>
+                      <div class="news-letter">
+                          <p>Type your email address below and recive our daily news letter for free.</p>
+                          <div class="subcribe">
+                              <form action="email.php">
+                                  <div class="form-group">
+                                      <input type="email" class="form-control" placeholder="Enput Your Email" name="email" id="cemail" required="">
+                                      <button type="submit" class="medipath-btn"><i class="far fa-paper-plane"></i></button>
+                                  </div>
+                              </form>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </section>
+
+  </body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+  <script>
+    $(document).ready(function() {
+
+        $('.items').slick({
+            infinite: false,
+            slidesToShow: 4,
+            slidesToScroll: 4
+        });
+    });
+</script>
+
+</html>

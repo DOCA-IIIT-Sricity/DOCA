@@ -5,7 +5,7 @@ from accounts.decorators import isDoctor
 from mongodb.mongolib import Table
 import numpy
 from accounts.decorators import getEmail
-import datetime import date
+from datetime import date
 import calendar
 import requests
 from faker import Faker
@@ -25,10 +25,8 @@ def find_day(date):
 def doc_home(request):
     table = Table('slots')
     email = getEmail(request.session['session_key'])
-    print(email)
     response = table.scan(FilterExpression={'doc_id':email}).values()
     items = response['Items']
-    print(items)
     c = 1
     for item in items:
         item['num'] = c
@@ -37,8 +35,6 @@ def doc_home(request):
         item['fees'] = str(item['fees'])
         c += 1
     return render(request, "appointments/doc_slots.html", {'items':items})
-
-# str(u"\u20B9") +
 
 @isDoctor(1)
 def add_slots(request):
@@ -250,8 +246,8 @@ def create_doc(request):
 @isDoctor(1)
 def dashboard(request):
     email = getEmail(request.session['session_key'])
-    date = str(date.today())
-    today = date[8:10]+date[5:7]+date[0:4]
+    Date = str(date.today())
+    today = Date[8:10]+Date[5:7]+Date[0:4]
     table = Table('appointments')
     result = table.scan(FilterExpression={'date':today,'doc_id':email}).values()
     return render(request,'appointments/dashboard.html',{'app' : result['Items']})
