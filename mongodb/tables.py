@@ -51,7 +51,8 @@ tables = [
         {
             'table_name' : 'Specilizations',
             'id':'spec_id'
-        }
+        },
+        {
             'table_name' : 'med',
             'id' : 'med_id',
         },
@@ -62,10 +63,6 @@ tables = [
         {
             'table_name' : 'pres_table',
             'id' : 'app_id',
-        },
-        {
-            'table_name' : 'transaction',
-            'id' : 'order_id',
         },
         {
             'table_name' : 'transaction',
