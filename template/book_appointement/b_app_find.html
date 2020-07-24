@@ -1,3 +1,4 @@
+{%load static%}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -70,7 +71,7 @@
         }
         
         body {
-            background-image: url('./b_app_background.jpg');
+            background-image: url("{%static 'img/b_app_background.jpg'%}");
             background-repeat: no-repeat;
             background-size: contain;
         }
@@ -88,8 +89,7 @@
         
         .card0 {
             height: 80%;
-            background-color: whitesmoke;
-            opacity: 0.7;
+            background-color: rgba(245, 245, 245, 0.7);
             width: 80%;
             margin-left: auto;
             margin-right: auto;
@@ -109,6 +109,44 @@
         
         .input100 {
             background: white;
+        }
+        
+        .have_sugestion {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .sugestion_div {
+            visibility: hidden;
+            width: 100%;
+            background-color: whitesmoke;
+            color: black;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px 0;
+            position: absolute;
+            z-index: 5;
+            top: 80px;
+            left: 0px;
+            margin-left: 0px;
+            max-height: 150px;
+            overflow-y: scroll;
+        }
+        
+        .sugestion_div .show {
+            visibility: visible;
+        }
+        
+        .specSugg_div {
+            color: blue;
+            text-align: start;
+            padding-left: 16px;
+            background-color: white;
+        }
+        
+        .specSugg_div:hover {
+            color: white;
+            background-color: blue;
         }
     </style>
 
@@ -192,19 +230,25 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="textfield_wrapper">
-                        <div class="wrap-input100 validate-input" data-validate="Password is required">
+                        <div class="wrap-input100 validate-input have_suggetion" data-validate="Password is required">
                             <span class="label-input100">Location</span>
-                            <input class="input100" type="text" name="password" placeholder="Type your location">
+                            <input class="input100" type="text" name="city" onkeyup="UserAction2()" id="city" autocomplete="off" placeholder="Type your City" onfocusout="myFunction4()" onfocus="myFunction3()">
                             <span class="focus-input100"><i class="material-icons" style="margin-top: 40px;">location_on</i></span>
+                            <div class="sugestion_div" id="citySugg">
+
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="textfield_wrapper">
-                        <div class="wrap-input100 validate-input" data-validate="Password is required">
+                        <div class="wrap-input100 validate-input have_suggetion" data-validate="Password is required">
                             <span class="label-input100">Specialization</span>
-                            <input class="input100" type="text" name="password" placeholder="Type Specialization">
+                            <input class="input100" type="text" name="spec" onkeyup="UserAction()" id="spec" autocomplete="off" onfocusout="myFunction2()" placeholder="Type your Specialization" onfocus="myFunction()">
                             <span class="focus-input100"><i class="material-icons" style="margin-top: 40px;">psychology</i></span>
+                            <div class="sugestion_div" id="specSugg">
+
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -241,5 +285,81 @@
     </div>
 
 </body>
+<script>
+    function myFunction() {
+        var popup = document.getElementById("specSugg");
+        popup.style.visibility = 'visible';
+    }
+
+    function myFunction2() {
+        var popup = document.getElementById("specSugg");
+        popup.style.visibility = 'hidden'
+    }
+
+    function myFunction3() {
+        var popup = document.getElementById("citySugg");
+        popup.style.visibility = 'visible';
+    }
+
+    function myFunction4() {
+        var popup = document.getElementById("citySugg");
+        popup.style.visibility = 'hidden'
+    }
+
+    function UserAction() {
+        var xhttp = new XMLHttpRequest();
+        var popup = document.getElementById("specSugg");
+        popup.innerHTML = "";
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                var rT = JSON.parse(this.responseText);
+                console.log(rT)
+                if (rT['code'] == 0) {
+                    console.log(rT['results']);
+                    for (var spec in rT['results']) {
+
+                        popup.innerHTML += "<div class='specSugg_div' onmouseover='f2(\"" + rT['results'][spec] + "\")'>" + rT['results'][spec] + "</div>";
+                    }
+                }
+
+            }
+        };
+        var q = document.getElementById('spec').value
+        xhttp.open("GET", "/api/spec/?spec=" + q, true);
+        xhttp.setRequestHeader("Content-type", "application/json");
+        xhttp.send();
+    }
+
+    function UserAction2() {
+        var xhttp = new XMLHttpRequest();
+        var popup = document.getElementById("citySugg");
+        popup.innerHTML = "";
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                var rT = JSON.parse(this.responseText);
+                console.log(rT)
+                if (rT['code'] == 0) {
+                    console.log(rT['results']);
+                    for (var spec in rT['results']) {
+                        popup.innerHTML += "<div class='specSugg_div' onmouseover='f3(\"" + rT['results'][spec]['city'] + "\")'>" + rT['results'][spec]['city'] + "," + rT['results'][spec]['state'] + "</div>";
+                    }
+                }
+
+            }
+        };
+        var q = document.getElementById('city').value
+        xhttp.open("GET", "/api/city/?city=" + q, true);
+        xhttp.setRequestHeader("Content-type", "application/json");
+        xhttp.send()
+    }
+
+    function f2(res) {
+        document.getElementById('spec').value = res;
+    }
+
+    function f3(res) {
+        document.getElementById('city').value = res;
+    }
+</script>
 
 </html>
