@@ -50,34 +50,12 @@ def add_slots(request):
     if request.method == 'POST':
         st_time = request.POST['st_time']
         end_time = request.POST['end_time']
-        time = request.POST['time']
         fees = request.POST['fees']
         dow = []
         for d in days:
             string = 'weekday-' + d
             if string in request.POST.keys():
                 dow.append(d)
-        h1 = int(st_time[0:2])
-        m1 = int(st_time[3:5])
-        h2 = int(end_time[0:2])
-        m2 = int(end_time[3:5])
-        time = int(time)
-        cal_slots = int(numpy.floor(((h2 * 60 + m2) - (h1 * 60 + m1)) / time))
-        for n in range(cal_slots):
-            if m1 != 0:
-                t1 = str(h1) + str(m1)
-            else:
-                t1 = str(h1) + str(m1) + '0'
-            m1 = int(m1) + int(time)
-            if m1 >= 60:
-                m1 = m1 - 60
-                h1 += 1
-                if m1<10:
-                    m1 = '0' + str(m1)
-            if m1 != 0:
-                t2 = str(h1) + str(m1)
-            else:
-                t2 = str(h1) + str(m1) + '0'
             data = table.scan(FilterExpression={}).values()
             items = data['Items']
             num = 0
@@ -87,15 +65,11 @@ def add_slots(request):
                     num = c
             num += 1
             num = str(num)
-            if len(t1) == 3:
-                t1 = '0' + t1
-            if len(t2) == 3:
-                t2 = '0' + t2
             table.insertValues(values=[{
                 'slot_id': num,
                 'doc_id': email,
-                'start_time': t1,
-                'end_time': t2,
+                'start_time': st_time,
+                'end_time': end_time,
                 'fees': fees,
                 'days':dow }])
             print(table.scan(FilterExpression={'doc_id':email}).values())
@@ -221,7 +195,6 @@ def appoint(request):
                         'fees': request.POST['fees'],
                         'date':'30072020' }])
                     return HttpResponse("Appointment Added")
-                
 
 
 def create_doc(request):
