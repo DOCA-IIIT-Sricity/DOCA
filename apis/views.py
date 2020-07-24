@@ -277,12 +277,14 @@ def slots_list(request):
                         elif (sst == ist) & (snt == iet):
                             return HttpResponse("New slot can't be created due to clashing of slot times")
                         else:
-                            for id in res['Items']:
-                                # print(id, type(id))
-                                sid = id['slot_id']
+                            l = slots_data['doc_id']
+                            sid = 0
+                            for i in res['Items']:
+                                if int(i['slot_id'][l:]) > sid:
+                                    sid = i['slot_id'][l:]
                             sid = int(sid) + 1
                             table.insertValues(values=[{
-                                    'slot_id': str(sid),
+                                    'slot_id': slots_data['doc_id'] + str(sid),
                                     'doc_id': slots_data['doc_id'],
                                     'spec' :slots_data['spec'],
                                     'start_time': slots_data['start_time'],
