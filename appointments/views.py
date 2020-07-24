@@ -56,23 +56,23 @@ def add_slots(request):
             string = 'weekday-' + d
             if string in request.POST.keys():
                 dow.append(d)
-            data = table.scan(FilterExpression={}).values()
-            items = data['Items']
-            num = 0
-            for it in items:
-                c = int(it['slot_id'])
-                if (c>num):
-                    num = c
-            num += 1
-            num = str(num)
-            table.insertValues(values=[{
-                'slot_id': num,
-                'doc_id': email,
-                'start_time': st_time,
-                'end_time': end_time,
-                'fees': fees,
-                'days':dow }])
-            print(table.scan(FilterExpression={'doc_id':email}).values())
+        data = table.scan(FilterExpression={}).values()
+        items = data['Items']
+        num = 0
+        for it in items:
+            c = int(it['slot_id'])
+            if (c>num):
+                num = c
+        num += 1
+        num = str(num)
+        table.insertValues(values=[{
+            'slot_id': num,
+            'doc_id': email,
+            'start_time': st_time,
+            'end_time': end_time,
+            'fees': fees,
+            'days':dow }])
+        print(table.scan(FilterExpression={'doc_id':email}).values())
     response = redirect('/appointments/doc_slots/')
     return response
 
@@ -182,7 +182,7 @@ def appoint(request):
                     'end_time': end_time,
                     'fees': fees,
                     'date':'30072020' }])
-            # return render(request, "prescription/", {'app_id':str(num)})
+            # return render(request, "p/", {'app_id':str(num)})
             return HttpResponse("Appointment Added")
         else:
             for item in d1['Items']:
