@@ -11,6 +11,7 @@ urlpatterns = [
     path("appoint/", views.appoint, name="appoint"),
     path("check_app/", views.check_appointments, name="check_app"),
     path("del_app/", views.cancel_appointments, name="cancel_app"),
+    path("dashboard/", views.dashboard, name="dashboard"),
 
     # path("create_doc/", views.create_doc, name="create_doc"),
 ]
