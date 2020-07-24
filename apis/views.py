@@ -247,11 +247,14 @@ def slots_list(request):
             elif slots_data['method'] == "add_slots":
                 d1 = table.scan(FilterExpression={'doc_id':slots_data['doc_id'], 'spec':slots_data['spec'], 'lon':slots_data['lon'], 'lat':slots_data['lat']}).values()
                 if d1['Count'] == 0:
+                    l = slots_data['doc_id']
+                    sid = 0
                     for i in res['Items']:
-                        sid = i['slot_id']
+                        if int(i['slot_id'][l:]) > sid:
+                            sid = i['slot_id'][l:]
                     sid = int(sid) + 1
                     table.insertValues(values=[{
-                            'slot_id': str(sid),
+                            'slot_id': slots_data['doc_id'] + str(sid),
                             'doc_id': slots_data['doc_id'],
                             'spec' :slots_data['spec'],
                             'start_time': slots_data['start_time'],
