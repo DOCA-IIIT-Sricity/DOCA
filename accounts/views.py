@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from .forms import LoginForm,SignupForm,OTPVerificationForm,FindAccountForm,ChangePasswordForm
+from .forms import LoginForm,SignupForm,OTPVerificationForm,FindAccountForm,ChangePasswordForm,ApplyForm
 from .verifylib import isValidEmail,isvalidPassword,isvalidUserName
 from .decorators import is_authenticated_notverified,is_not_authenticated,isDoctor,getEmail
 from doca.settings import SECRET_KEY
@@ -13,7 +13,66 @@ import jwt
 import hashlib
 from mongodb.mongolib import Table
 
+@is_not_authenticated
+def apply(request):
+    if request.method == "GET":
+        return render(request,'accounts/applyasdoctor.html')
+    if request.method == "POST":
+        if 'fname' in request.POST and 'lname' in request.POST and 'email' in request.POST and 'city' in request.POST and 'spec' in request.POST and 'address' in request.POST:
+            form=ApplyForm(request.POST)
+            
+            if True:
+                print("valid form")
+                fname = request.POST['fname']
+                lname = request.POST['lname']
+                password = request.POST['password']
+                email = request.POST['email']
+                city = request.POST['city']
+                spec = request.POST['spec']
+                address = request.POST['address']
+                table = Table('users')
+                if(isvalidPassword(password) and isValidEmail(email)):
+                    password=hashlib.sha256((password+SECRET_KEY).encode())
+                    password=password.hexdigest()
+                    
+                    username = fname + lname
 
+                    table.insertValues(values=[{
+                        'email':email,
+                        'password':password,
+                        'username':username,
+                        'isVerified':0,
+                        'isDoctor': 1,
+                    }])
+                    
+                    table = Table('doctor')
+                    table.insertValues(values=[{
+                        "doc_id":email,
+                        "first_name":fname,
+                        "last_name":lname,
+                        "city":city,
+                        "address":address,
+                        "spec":spec,
+                    }])
+                    
+                    table = Table('SessionStore')
+
+                    tkey = email + datetime.now().strftime("%Y%m%d%H%M%S") + SECRET_KEY
+                    tkey = str(hashlib.sha256(tkey.encode()).hexdigest())
+                    table.insertValues(values=[{
+                        "session_key":tkey,
+                        "email":email,
+                        "timestamp":datetime.now().strftime("%Y%m%d%H%M%S"),
+                        "isVerified" : 0 ,
+                        "isDoctor": 1,  
+                    }])
+                    request.session['session_key'] = tkey;
+
+                    return HttpResponseRedirect("/accounts/verifyotp/")
+                    
+            print("form invalid")
+        return render(request,'accounts/applyasdoctor.html')
+        
 
 def sendOtp(to,val1):
     otp_gen=random.randint(100000,999999)

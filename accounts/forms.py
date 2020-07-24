@@ -17,6 +17,16 @@ class SignupForm(forms.Form):
     username = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput)
     email = forms.CharField()
+    
+class ApplyForm(forms.Form):
+    fname = forms.CharField()
+    lname = forms.CharField()
+    password = forms.CharField(widget=forms.PasswordInput)
+    email = forms.CharField()
+    spec = forms.CharField()
+    phone = forms.CharField()
+    city = forms.CharField()
+    address = forms.CharField()
 
 class OTPVerificationForm(forms.Form):
     o1 = forms.CharField(max_length=1)

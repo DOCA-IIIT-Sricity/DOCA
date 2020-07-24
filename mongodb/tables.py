@@ -33,7 +33,7 @@ tables = [
             'id' : 'slot_id',
         },
         {
-            'table_name' : 'slot_available',
+            'table_name' : 'appointement_helper',
             'id' : 'id',
         },
         {
@@ -41,6 +41,17 @@ tables = [
             'id' : 'app_id',
         },
         {
+            'table_name' : 'doctor',
+            'id':'doc_id'
+        },
+        {
+            'table_name' : 'Cities',
+            'id':'city_id'
+        },
+        {
+            'table_name' : 'Specilizations',
+            'id':'spec_id'
+        }
             'table_name' : 'med',
             'id' : 'med_id',
         },

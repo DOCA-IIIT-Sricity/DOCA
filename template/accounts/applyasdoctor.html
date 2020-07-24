@@ -1,181 +1,274 @@
-<!doctype html>
-{%load static%}
+<!doctype html> {%load static%}
 <html>
 
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="icon" type="image/png" href="{% static 'img/favicon.ico' %}" />
-	<link rel="stylesheet" type="text/css" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
-	<link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
-	<link rel="stylesheet" type="text/css" href="fonts/iconic/css/material-design-iconic-font.min.css">
-	<link rel="stylesheet" type="text/css" href="{% static 'vendor/animate/animate.css' %}">
-	<link rel="stylesheet" type="text/css" href="{% static 'vendor/css-hamburgers/hamburgers.min.css' %}">
-	<link rel="stylesheet" type="text/css" href="{% static 'vendor/animsition/css/animsition.min.css' %}">
-	<link rel="stylesheet" type="text/css" href="{% static 'vendor/select2/select2.min.css' %}">
-	<link rel="stylesheet" type="text/css" href="{% static 'vendor/daterangepicker/daterangepicker.css' %}">
-	<link rel="stylesheet" type="text/css" href="{% static 'css/util.css' %}">
-	<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
-	<link
-		href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic|Roboto+Mono:400,500|Material+Icons"
-		rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="{% static 'img/favicon.ico' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="fonts/iconic/css/material-design-iconic-font.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/animate/animate.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/css-hamburgers/hamburgers.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/animsition/css/animsition.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/select2/select2.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/daterangepicker/daterangepicker.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/util.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic|Roboto+Mono:400,500|Material+Icons" rel="stylesheet">
 
-	<style>
-		body {
-			background-image:url("{% static 'img/backgroundlogin.jpg'%}");
-			background-size: cover;
-			background-position: center;
-			background-repeat: no-repeat;
-			overflow: hidden;
-		}
-
-		.limiter {
-			width: 100%;
-			height: 80% ;
-		}
-
-		.focus-input100 {
-			top: 50%;
-			height: 50%;
-
-		}
-
-		.bottom-layer {
-			width: 120%;
-			height: 100%;
-			position: absolute;
-			z-index: 0;
-			background:	#673BB7;
-			opacity: 0.8;
-			left: -20%;
-		}
-
-		.wrap-login100{
-			overflow: hidden;
-			overflow-y: scroll;
-			height: 700px;
-			width: 60%;
-		}
-		.mtext{
-			font-size: x-large;
-		}
-	</style>
+    <style>
+        body {
+            background-image:url("{% static 'img/backgroundlogin.jpg'%}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            overflow: hidden;
+        }
+        
+        .limiter {
+            width: 100%;
+            height: 80%;
+        }
+        
+        .focus-input100 {
+            top: 50%;
+            height: 50%;
+        }
+        
+        .bottom-layer {
+            width: 120%;
+            height: 100%;
+            position: absolute;
+            z-index: 0;
+            background: #673BB7;
+            opacity: 0.8;
+            left: -20%;
+        }
+        
+        .wrap-login100 {
+            overflow: hidden;
+            overflow-y: scroll;
+            height: 700px;
+            width: 60%;
+        }
+        
+        .mtext {
+            font-size: x-large;
+        }
+        
+        .have_sugestion {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .sugestion_div {
+            visibility: hidden;
+            width: 100%;
+            background-color: whitesmoke;
+            color: black;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px 0;
+            position: absolute;
+            z-index: 5;
+            top: 80px;
+            left: 0px;
+            margin-left: 0px;
+            max-height: 150px;
+            overflow-y: scroll;
+        }
+        
+        .sugestion_div .show {
+            visibility: visible;
+        }
+        
+        .specSugg_div {
+            color: blue;
+            text-align: start;
+            padding-left: 16px;
+            background-color: white;
+        }
+        
+        .specSugg_div:hover {
+            color: white;
+            background-color: blue;
+        }
+    </style>
 </head>
 
 <body>
-	<div class="container">
-		<div class="bottom-layer"></div>
-		<div class="row d-flex justify-content-end ">
-			<div class="col-md-12">
-				<div class="limiter">
-					<div class="container-login100" style="background-image: url('images/bg-01.jpg');">
-						<div class="wrap-login100 p-l-55 p-r-55 p-t-65 p-b-54">
-							<form class="login100-form validate-form" action="/accounts/signup/" method="post">
-								<span class="login100-form-title p-b-20 mtext">
+    <div class="container">
+        <div class="bottom-layer"></div>
+        <div class="row d-flex justify-content-end ">
+            <div class="col-md-12">
+                <div class="limiter">
+                    <div class="container-login100" style="background-image: url('images/bg-01.jpg');">
+                        <div class="wrap-login100 p-l-55 p-r-55 p-t-65 p-b-54">
+                            <form class="login100-form validate-form" action="/accounts/apply/" method="post">
+                                <span class="login100-form-title p-b-20 mtext">
 									Register yourself as a Doctor on DOCA
-								</span>
-								{%csrf_token%}
-								{% if err is not null %}
-								<span class="login-form-title p-b-20" style="color:red">{{err}}<br><br></span>
-								{% endif %}
-								<div class="wrap-input100 validate-input m-b-23" data-validate="Username is reauired">
-									<span class="label-input100">First Name</span>
-									<input class="input100" type="text" name="username" auto-complete="off"
-										placeholder="Type your username">
-									<span class="focus-input100"><i class="material-icons">perm_identity</i></span>
-								</div>
-								<div class="wrap-input100 validate-input m-b-23" data-validate="Username is reauired">
-									<span class="label-input100">Last Name</span>
-									<input class="input100" type="text" name="username" auto-complete="off"
-										placeholder="Type your username">
-									<span class="focus-input100"><i class="material-icons">perm_identity</i></span>
-								</div>
-								<div class="wrap-input100 validate-input m-b-23" data-validate="Username is reauired">
-									<span class="label-input100">Specialization</span>
-									<input class="input100" type="text" name="username" auto-complete="off"
-										placeholder="Type your username">
-									<span class="focus-input100"><i class="material-icons">perm_identity</i></span>
-								</div>
-								<div class="wrap-input100 validate-input m-b-23" data-validate="Email is reauired">
-									<span class="label-input100">Email</span>
-									<input class="input100" type="text" name="email" auto-complete="off"
-										placeholder="Type your Email">
-									<span class="focus-input100"><i class="material-icons">email</i></span>
-								</div>
-								<div class="wrap-input100 validate-input m-b-23" data-validate="Email is reauired">
-									<span class="label-input100">Mobile No.</span>
-									<input class="input100" type="text" name="email" auto-complete="off"
-										placeholder="Type your Email">
-									<span class="focus-input100"><i class="material-icons">email</i></span>
-								</div>
-								<div class="wrap-input100 validate-input" data-validate="Password is required">
-									<span class="label-input100">Password</span>
-									<input class="input100" type="password" name="password"
-										placeholder="Type your password">
-									<span class="focus-input100"><i class="material-icons">lock</i></span>
-								</div><br>
-								<div class="wrap-input100 validate-input m-b-23" data-validate="Username is reauired">
-									<span class="label-input100">Address</span>
-									<input class="input100" type="text" name="username" auto-complete="off"
-										placeholder="Type your username">
-									<span class="focus-input100"><i class="material-icons">perm_identity</i></span>
-								</div>
-								<div class="wrap-input100 validate-input m-b-23" data-validate="Username is reauired">
-									<span class="label-input100">City</span>
-									<input class="input100" type="text" name="username" auto-complete="off"
-										placeholder="Type your username">
-									<span class="focus-input100"><i class="material-icons">perm_identity</i></span>
-								</div>
-								<div class="wrap-input100 validate-input m-b-23" data-validate="Username is reauired">
-									<span class="label-input100">State</span>
-									<input class="input100" type="text" name="username" auto-complete="off"
-										placeholder="Type your username">
-									<span class="focus-input100"><i class="material-icons">perm_identity</i></span>
-								</div>
-								<div class="wrap-input100 validate-input m-b-23" data-validate="Username is reauired">
-									<span class="label-input100">Pin Code</span>
-									<input class="input100" type="text" name="username" auto-complete="off"
-										placeholder="Type your username">
-									<span class="focus-input100"><i class="material-icons">perm_identity</i></span>
-								</div>
-								<br>
+								</span> {%csrf_token%} {% if err is not null %}
+                                <span class="login-form-title p-b-20" style="color:red">{{err}}<br><br></span> {% endif %}
+                                <div class="wrap-input100 validate-input m-b-23" data-validate="Username is reauired">
+                                    <span class="label-input100">First Name</span>
+                                    <input class="input100" type="text" name="fname" auto-complete="off" placeholder="Type your username">
+                                    <span class="focus-input100"><i class="material-icons">perm_identity</i></span>
+                                </div>
+                                <div class="wrap-input100 validate-input m-b-23" data-validate="Username is reauired">
+                                    <span class="label-input100">Last Name</span>
+                                    <input class="input100" type="text" name="lname" auto-complete="off" placeholder="Type your username">
+                                    <span class="focus-input100"><i class="material-icons">perm_identity</i></span>
+                                </div>
+                                <div class="wrap-input100 validate-input m-b-23 have_suggetion" data-validate="Username is reauired">
+                                    <span class="label-input100">Specialization</span>
+                                    <input class="input100 " type="text" name="spec" onkeyup="UserAction()" id="spec" autocomplete="off" onfocusout="myFunction2()" placeholder="Type your Specialization" onfocus="myFunction()">
+                                    <div class="sugestion_div" id="specSugg">
 
-								<div class="container-login100-form-btn">
-									<div class="wrap-login100-form-btn">
-										<div class="login100-form-bgbtn"></div>
-										<button class="login100-form-btn">
+                                    </div>
+                                    <span class="focus-input100"><i class="material-icons">perm_identity</i></span>
+                                </div>
+                                <div class="wrap-input100 validate-input m-b-23" data-validate="Email is reauired">
+                                    <span class="label-input100">Email</span>
+                                    <input class="input100" type="text" name="email" auto-complete="off" placeholder="Type your Email">
+                                    <span class="focus-input100"><i class="material-icons">email</i></span>
+                                </div>
+                                <div class="wrap-input100 validate-input m-b-23" data-validate="Email is reauired">
+                                    <span class="label-input100">Mobile No.</span>
+                                    <input class="input100" type="text" name="mobile" auto-complete="off" placeholder="Type your Mobile Number">
+                                    <span class="focus-input100"><i class="material-icons">phone</i></span>
+                                </div>
+                                <div class="wrap-input100 validate-input" data-validate="Password is required">
+                                    <span class="label-input100">Password</span>
+                                    <input class="input100" type="password" name="password" placeholder="Type your password">
+                                    <span class="focus-input100"><i class="material-icons">lock</i></span>
+                                </div><br>
+                                <div class="wrap-input100 validate-input m-b-23" data-validate="Username is reauired">
+                                    <span class="label-input100">Address</span>
+                                    <input class="input100" type="text" name="address" auto-complete="off" placeholder="Type your Address">
+                                    <span class="focus-input100"><i class="material-icons">perm_identity</i></span>
+                                </div>
+                                <div class="wrap-input100 validate-input m-b-23 have_suggetion" data-validate="Username is reauired">
+                                    <span class="label-input100">City</span>
+                                    <input class="input100" type="text" name="city" onkeyup="UserAction2()" id="city" autocomplete="off" placeholder="Type your City" onfocusout="myFunction4()" onfocus="myFunction3()">
+                                    <span class="focus-input100"><i class="material-icons">location_on</i></span>
+                                    <div class="sugestion_div" id="citySugg"></div>
+                                </div>
+                                <br>
+
+                                <div class="container-login100-form-btn">
+                                    <div class="wrap-login100-form-btn">
+                                        <div class="login100-form-bgbtn"></div>
+                                        <button class="login100-form-btn">
 											Sign Up
 										</button>
-									</div>
-								</div>
+                                    </div>
+                                </div>
 
-								<div class="flex-col-c p-t-75">
-									<span class="txt1 p-b-17">
+                                <div class="flex-col-c p-t-75">
+                                    <span class="txt1 p-b-17">
 										Or Login
 									</span>
 
-									<a href="/accounts/login/" class="txt2">
+                                    <a href="/accounts/login/" class="txt2">
 										Login
 									</a>
-								</div>
-							</form>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
 
-			<div id="dropDownSelect1"></div>
-			<script src="{% static 'vendor/jquery/jquery-3.2.1.min.js' %}"></script>
-			<script src="{% static 'vendor/animsition/js/animsition.min.js' %}"></script>
-			<script src="{% static 'vendor/bootstrap/js/popper.js' %}"></script>
-			<script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
-			<script src="{% static 'vendor/select2/select2.min.js' %}"></script>
-			<script src="{% static 'vendor/daterangepicker/moment.min.js' %}"></script>
-			<script src="{% static 'vendor/daterangepicker/daterangepicker.js' %}"></script>
-			<script src="{% static 'vendor/countdowntime/countdowntime.js' %}"></script>
-			<script src="{% static 'js/main.js' %}"></script>
+            <div id="dropDownSelect1"></div>
+            <script src="{% static 'vendor/jquery/jquery-3.2.1.min.js' %}"></script>
+            <script src="{% static 'vendor/animsition/js/animsition.min.js' %}"></script>
+            <script src="{% static 'vendor/bootstrap/js/popper.js' %}"></script>
+            <script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+            <script src="{% static 'vendor/select2/select2.min.js' %}"></script>
+            <script src="{% static 'vendor/daterangepicker/moment.min.js' %}"></script>
+            <script src="{% static 'vendor/daterangepicker/daterangepicker.js' %}"></script>
+            <script src="{% static 'vendor/countdowntime/countdowntime.js' %}"></script>
+            <script src="{% static 'js/main.js' %}"></script>
+            <script>
+                // When the user clicks on div, open the popup
+                function myFunction() {
+                    var popup = document.getElementById("specSugg");
+                    popup.style.visibility = 'visible';
+                }
+
+                function myFunction2() {
+                    var popup = document.getElementById("specSugg");
+                    popup.style.visibility = 'hidden'
+                }
+
+                function myFunction3() {
+                    var popup = document.getElementById("citySugg");
+                    popup.style.visibility = 'visible';
+                }
+
+                function myFunction4() {
+                    var popup = document.getElementById("citySugg");
+                    popup.style.visibility = 'hidden'
+                }
+
+                function UserAction() {
+                    var xhttp = new XMLHttpRequest();
+                    var popup = document.getElementById("specSugg");
+                    popup.innerHTML = "";
+                    xhttp.onreadystatechange = function() {
+                        if (this.readyState == 4 && this.status == 200) {
+                            var rT = JSON.parse(this.responseText);
+                            console.log(rT)
+                            if (rT['code'] == 0) {
+                                console.log(rT['results']);
+                                for (var spec in rT['results']) {
+
+                                    popup.innerHTML += "<div class='specSugg_div' onmouseover='f2(\"" + rT['results'][spec] + "\")'>" + rT['results'][spec] + "</div>";
+                                }
+                            }
+
+                        }
+                    };
+                    var q = document.getElementById('spec').value
+                    xhttp.open("GET", "/api/spec/?spec=" + q, true);
+                    xhttp.setRequestHeader("Content-type", "application/json");
+                    xhttp.send();
+                }
+
+                function UserAction2() {
+                    var xhttp = new XMLHttpRequest();
+                    var popup = document.getElementById("citySugg");
+                    popup.innerHTML = "";
+                    xhttp.onreadystatechange = function() {
+                        if (this.readyState == 4 && this.status == 200) {
+                            var rT = JSON.parse(this.responseText);
+                            console.log(rT)
+                            if (rT['code'] == 0) {
+                                console.log(rT['results']);
+                                for (var spec in rT['results']) {
+                                    popup.innerHTML += "<div class='specSugg_div' onmouseover='f3(\"" + rT['results'][spec]['city'] + "\")'>" + rT['results'][spec]['city'] + "," + rT['results'][spec]['state'] + "</div>";
+                                }
+                            }
+
+                        }
+                    };
+                    var q = document.getElementById('city').value
+                    xhttp.open("GET", "/api/city/?city=" + q, true);
+                    xhttp.setRequestHeader("Content-type", "application/json");
+                    xhttp.send()
+                }
+
+                function f2(res) {
+                    document.getElementById('spec').value = res;
+                }
+
+                function f3(res) {
+                    document.getElementById('city').value = res;
+                }
+            </script>
 
 </body>
 
