@@ -68,10 +68,6 @@ tables = [
             'table_name' : 'transaction',
             'id' : 'order_id',
         },
-        {
-            'table_name' : 'transaction',
-            'id' : 'order_id',
-        },
     ]
 
 def migrate():
