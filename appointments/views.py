@@ -42,7 +42,6 @@ def add_slots(request):
     email = getEmail(request.session['session_key'])
     days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
 
-
     if request.method == 'POST':
         st_time = request.POST['st_time']
         end_time = request.POST['end_time']
@@ -54,13 +53,14 @@ def add_slots(request):
                 dow.append(d)
         data = table.scan(FilterExpression={}).values()
         items = data['Items']
+        l = len(str(email))
         num = 0
         for it in items:
-            c = int(it['slot_id'])
+            c = int(it['slot_id'][l:])
             if (c>num):
                 num = c
         num += 1
-        num = str(num)
+        num = email + str(num)
         table.insertValues(values=[{
             'slot_id': num,
             'doc_id': email,
@@ -125,7 +125,7 @@ def cancel_appointments(request):
     return response
 
 
-# @isDoctor(0)
+@isDoctor(0)
 def check_avail(request):
     if request.method == "POST":
         table = Table('slots')
@@ -133,7 +133,6 @@ def check_avail(request):
         locality = request.POST['locality']
         spec = request.POST['spec']
         date = request.POST['date_app']
-
         info = table.scan(FilterExpression={'spec':spec}).sort("start_time")
         doc_info = info['Items']
         print(info)
@@ -141,7 +140,7 @@ def check_avail(request):
     else:
         return render(request, "appointments/pat_slots.html")
 
-# @isDoctor(0)
+@isDoctor(0)
 def appoint(request):
     table = Table('appointments')
     table2 = Table('slots')
@@ -243,6 +242,7 @@ def create_doc(request):
                 'lon': lon,
                 'lat': lat}])
     return HttpResponse("You have generated data")
+
 @isDoctor(1)
 def dashboard(request):
     email = getEmail(request.session['session_key'])
