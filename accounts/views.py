@@ -13,6 +13,16 @@ import jwt
 import hashlib
 from mongodb.mongolib import Table
 
+@isDoctor(0)
+def PatientHome(request):
+    uid=getEmail(request.session['session_key'])
+    table = Table('appointments')
+    appointments = table.scan(FilterExpression={'user_id':uid}).values()
+    rdict={}
+    if appointments['Count']!=0:
+        rdict={'appointements':appointments['Items']}
+    return render(request,'patient/Homepage.html',rdict)
+
 @is_not_authenticated
 def apply(request):
     if request.method == "GET":
@@ -145,8 +155,8 @@ def login(request):
                         return HttpResponseRedirect('/accounts/verifyotp/')
 
                     if 'isDoctor' not in response['Items'][0] :
-                        return HttpResponse("<H1> Patient HomePage </H1>")
-                    return render(request,'appointments/dashboard')
+                        return HttpResponseRedirect('/accounts/pHome/')
+                    return HttpResponse("<H1> Doctor HomePage </H1>")#render(request,'appointments/dashboard')
 
                 else:
                     return render(request,'accounts/login.html',{"err":"Invalid Email address/UserName or Password","userI":user})

@@ -11,5 +11,6 @@ urlpatterns = [
     path('dmail/',views.sendDemoMail),
     path('changepassword/',views.changePassword),
     path('uploadDp/',views.uploadDp),
-    path('apply/',views.apply)
+    path('apply/',views.apply),
+    path('pHome/',views.PatientHome),
 ]

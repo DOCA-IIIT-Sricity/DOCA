@@ -1,3 +1,4 @@
+{%load static%}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -206,7 +207,7 @@
                 <div class="row">
                     <div class="col-lg-2 col-md-2 col-sm-2">
                         <div class="logo" style="margin-top:8px;">
-                            <a href="index.html" style="font-size: 25px;"><img src="../../static/img/logodark.png" alt="">DOCA</a>
+                            <a href="/accounts/pHome/" style="font-size: 25px;"><img src="../../static/img/logodark.png" alt="">DOCA</a>
                         </div>
                     </div>
                     <div class="col-lg-10 col-md-10 col-sm-10">
@@ -215,25 +216,25 @@
                             <nav style="display: block;">
                                 <div class="nav-mid">
                                     <div class="product-tab">
-                                        <a class="nav-interact" event="Nav:Interacted:Book an appointment" href="https://www.practo.com/doctors" title="book">
+                                        <a class="nav-interact" event="Nav:Interacted:Book an appointment" href="/book/search/" title="book">
                                             <div class="product-tab__title">Doctors</div>
                                             <div class="product-tab__subtitle">Book an appointment</div>
                                         </a>
                                     </div>
                                     <div class="product-tab">
-                                        <a class="nav-interact" event="Nav:Interacted:Chat with doctor" href="https://www.practo.com/consult" title="chat">
+                                        <a class="nav-interact" event="Nav:Interacted:Chat with doctor" href="/chat/home/" title="chat">
                                             <div class="product-tab__title">Chat</div>
                                             <div class="product-tab__subtitle">Chat with top doctors</div>
                                         </a>
                                     </div>
                                     <div class="product-tab">
-                                        <a class="nav-interact" event="Nav:Interacted:Order medicines" href="https://www.practo.com/order/?utm_source=practonavbar&amp;utm_medium=referral&amp;utm_campaign=practonavbarredirect" title="medicines">
+                                        <a class="nav-interact" event="Nav:Interacted:Order medicines" href="" title="medicines">
                                             <div class="product-tab__title">Pharmacy</div>
                                             <div class="product-tab__subtitle">Medicines &amp; health products</div>
                                         </a>
                                     </div>
                                     <div class="product-tab">
-                                        <a class="nav-interact" event="Nav:Interacted:Book diagnostic tests" href="https://www.practo.com/tests" title="tests">
+                                        <a class="nav-interact" event="Nav:Interacted:Book diagnostic tests" href="/appointments/manage/" title="tests">
                                             <div class="product-tab__title">Appointment</div>
                                             <div class="product-tab__subtitle">Manage your appointments</div>
                                         </a>
@@ -246,7 +247,7 @@
                         <div class="nav-right text-right">
                             <div class="nav-items">
                                 <span>
-                                <a href="www.google.com" class="btn-border nav-login nav-interact ">Logout</a>
+                                <a href="/accounts/logout/" class="btn-border nav-login nav-interact ">Logout</a>
                             </span>
                             </div>
                         </div>
@@ -268,16 +269,16 @@
                 </div>
                 <div class="col-5" style="padding-top:20px;">
                     <div class="doc_info_section">
-                        <div class="row doctor-name">Dr. John Doe</div>
-                        <div class="row doctor_spec">Specialization</div>
-                        <div class="row doctor_spec">X+ year experience</div>
-                        <div class="row doctor_loc">pxx agjb bjgn</div>
+                        <div class="row doctor-name">Dr. {{doc.first_name}} {{doc.last_name}}</div>
+                        <div class="row doctor_spec">{{doc.spec}}</div>
+                        <div class="row doctor_spec">{{doc.experience}}</div>
+                        <div class="row doctor_loc">{{doc.address}},{{doc.city}}</div>
                         <div class="uv2-spacer--md-top uv2-cushion--lg-top u-border-general-dashed-top--gray-10">
                             <div>
                                 <div class="row">
                                     <div class="col-3">
                                         <div class="row">
-                                            <img src="ruppee.png" width="24px" height="24px"> <span class="doc_fee"> 300</span>
+                                            <img src="{%static 'img/ruppee.png'%}" width="24px" height="24px"> <span class="doc_fee">{{slot.fee}}</span>
                                         </div>
                                     </div>
                                     <div class="col-3">
@@ -298,12 +299,12 @@
                             <span class="material-icons">
                                 alarm
                                 </span>
-                            <span> 9:45</span>
+                            <span>{{slot.start_time}}</span>
                             <span> </span>
                             <span class="material-icons" style="margin-left:8px">
                                 event
                                 </span>
-                            <span> 12 Aug 2020</span>
+                            <span>{{date}}</span>
                         </div>
                         <div class="row">
                             <button class="btn-toolbar book_btn">Continue to payment</button>
