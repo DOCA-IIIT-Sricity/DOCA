@@ -15,7 +15,13 @@ from mongodb.mongolib import Table
 
 @isDoctor(0)
 def PatientHome(request):
-    return render(request,'patient/Homepage.html')
+    uid=getEmail(request.session['session_key'])
+    table = Table('appointments')
+    appointments = table.scan(FilterExpression={'user_id':uid}).values()
+    rdict={}
+    if appointments['Count']!=0:
+        rdict={'appointements':appointments['Items']}
+    return render(request,'patient/Homepage.html',rdict)
 
 @is_not_authenticated
 def apply(request):
