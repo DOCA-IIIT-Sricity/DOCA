@@ -1,20 +1,10 @@
-{% load static %}
+{% extends 'appointments/doc_index.html' %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/doc_slots.css' %}">
-</head>
-<body>
+    {% block content %}
+    <br><br>
     <div class="container" style="padding-top: 7%">
         <div class="row">
-            <div class="col"></div>
+            <div class="col">Check Box</div>
             <div class="col">S.No</div>
             <div class="col">Start Time</div>
             <div class="col">End Time</div>
@@ -79,7 +69,13 @@
                 </div>
             </div>
             {% endfor %}
-            {% endif %}
+        {% else %}
+            <div class="container">
+            <br><br>
+            <div>
+            <h4>No Slots Available</h4>
+        {% endif %}
+            <br>
             <div class="row">
                 <div class="col"><button type="submit" class="btn btn-danger">Delete</button></div>
                 <div class="col"></div>
@@ -89,6 +85,7 @@
                 <div class="col"></div>
             </div>
             </form>
+        <br><br>
         <div class="modal fade bd-example-modal-lg" id="myModal">
             <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -119,19 +116,19 @@
                             <div class="col">
                             <div class="weekDays-selector">
                                 <input type="checkbox" name="weekday-mon" id="weekday-mon" class="weekday" checked />
-                                <label for="weekday-mon">M</label>
+                                <label for="weekday-mon">Mon</label>
                                 <input type="checkbox" name="weekday-tue" id="weekday-tue" class="weekday" checked />
-                                <label for="weekday-tue">T</label>
+                                <label for="weekday-tue">Tue</label>
                                 <input type="checkbox" name="weekday-wed" id="weekday-wed" class="weekday" checked />
-                                <label for="weekday-wed">W</label>
+                                <label for="weekday-wed">Wed</label>
                                 <input type="checkbox" name="weekday-thu" id="weekday-thu" class="weekday" checked />
-                                <label for="weekday-thu">T</label>
+                                <label for="weekday-thu">Thu</label>
                                 <input type="checkbox" name="weekday-fri" id="weekday-fri" class="weekday" checked />
-                                <label for="weekday-fri">F</label>
+                                <label for="weekday-fri">Fri</label>
                                 <input type="checkbox" name="weekday-sat" id="weekday-sat" class="weekday" />
-                                <label for="weekday-sat">S</label>
+                                <label for="weekday-sat">Sat</label>
                                 <input type="checkbox" name="weekday-sun" id="weekday-sun" class="weekday" />
-                                <label for="weekday-sun">S</label>
+                                <label for="weekday-sun">Sun</label>
                             </div>
                             </div>
                         </div><br>
@@ -146,5 +143,4 @@
             </div>
         </div>
     </div>
-</body>
-</html>
+    {% endblock %}

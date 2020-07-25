@@ -1,39 +1,28 @@
-{% load static %}
+{% extends 'appointments/pat_index.html' %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/doc_slots.css' %}">
-</head>
-<body>
-    <div class="container" style="padding-top: 7%">
+    {% block content %}
+    <div class="container" style="width:100%; padding-left:10dp; padding-right: 10dp">
     {% if doc_info %}
         <div class="row">
-            <div class="col" style="width:500px">Doctor</div>
-            <div class="col" style="width:100px">Specialization</div>
-            <div class="col" style="width:100px">Start Time</div>
-            <div class="col" style="width:100px">End Time</div>
-            <div class="col" style="width:100px">Fees</div>
-            <div class="col" style="width:100px">Date</div>
+            <div class="col">Doctor</div>
+            <div class="col">Specialization</div>
+            <div class="col">Start Time</div>
+            <div class="col">End Time</div>
+            <div class="col">Fees</div>
+            <div class="col">Date</div>
             <div class="col"></div>
         </div>
             {% for item in doc_info %}
                 <form action="{% url "appointments:appoint" %}" method="post">
                     {% csrf_token %}
                     <div class="row">
-                        <div class="col" style="width:500px">{{ item.doc_id }}</div>
+                        <div class="col">{{ item.doc_id }}</div>
                         <input type="hidden" name="slot_id" value="{{ item.slot_id }}" readonly>
-                        <div class="col" style="width:100px">{{ item.spec }}</div>
-                        <div class="col" style="width:100px">{{ item.start_time }}</div>
-                        <div class="col" style="width:100px">{{ item.end_time }}</div>
-                        <div class="col" style="width:100px">{{ item.fees }}</div>
-                        <div class="col" style="width:100px">{{ item.date }}</div>
+                        <div class="col">{{ item.spec }}</div>
+                        <div class="col">{{ item.start_time }}</div>
+                        <div class="col">{{ item.end_time }}</div>
+                        <div class="col">{{ item.fees }}</div>
+                        <div class="col">{{ item.date }}</div>
                         <div class="col"><button type="submit" class="btn btn-secondary">Check</button></div>
                     </div>
                 </form>
@@ -42,5 +31,4 @@
         <h4>We have no doctors with that specialization</h4>
     {% endif %}
     </div>
-</body>
-</html>
+    {% endblock %}

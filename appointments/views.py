@@ -25,10 +25,8 @@ def find_day(date):
 def doc_home(request):
     table = Table('slots')
     email = getEmail(request.session['session_key'])
-    print(email)
     response = table.scan(FilterExpression={'doc_id':email}).values()
     items = response['Items']
-    print(items)
     c = 1
     for item in items:
         item['num'] = c
@@ -38,14 +36,11 @@ def doc_home(request):
         c += 1
     return render(request, "appointments/doc_slots.html", {'items':items})
 
-# str(u"\u20B9") +
-
 @isDoctor(1)
 def add_slots(request):
     table = Table('slots')
     email = getEmail(request.session['session_key'])
     days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
-
 
     if request.method == 'POST':
         st_time = request.POST['st_time']
@@ -58,13 +53,14 @@ def add_slots(request):
                 dow.append(d)
         data = table.scan(FilterExpression={}).values()
         items = data['Items']
+        l = len(str(email))
         num = 0
         for it in items:
-            c = int(it['slot_id'])
+            c = int(it['slot_id'][l:])
             if (c>num):
                 num = c
         num += 1
-        num = str(num)
+        num = email + str(num)
         table.insertValues(values=[{
             'slot_id': num,
             'doc_id': email,
@@ -129,7 +125,7 @@ def cancel_appointments(request):
     return response
 
 
-# @isDoctor(0)
+@isDoctor(0)
 def check_avail(request):
     if request.method == "POST":
         table = Table('slots')
@@ -137,7 +133,6 @@ def check_avail(request):
         locality = request.POST['locality']
         spec = request.POST['spec']
         date = request.POST['date_app']
-
         info = table.scan(FilterExpression={'spec':spec}).sort("start_time")
         doc_info = info['Items']
         print(info)
@@ -145,15 +140,15 @@ def check_avail(request):
     else:
         return render(request, "appointments/pat_slots.html")
 
-# @isDoctor(0)
+@isDoctor(0)
 def appoint(request):
     table = Table('appointments')
     table2 = Table('slots')
     data = table.scan(FilterExpression={}).values()
-    # email = getEmail(request.session['session_key'])
+    email = getEmail(request.session['session_key'])
     # print(data)
     # print(request.POST['slot_id'])
-    email = "lushaank@gmail.com"
+    # email = "lushaank@gmail.com"
     if request.method == "POST":
         num = 0
         items = data['Items']
@@ -247,11 +242,12 @@ def create_doc(request):
                 'lon': lon,
                 'lat': lat}])
     return HttpResponse("You have generated data")
+
 @isDoctor(1)
 def dashboard(request):
     email = getEmail(request.session['session_key'])
-    date = str(date.today())
-    today = date[8:10]+date[5:7]+date[0:4]
+    Date = str(date.today())
+    today = Date[8:10]+Date[5:7]+Date[0:4]
     table = Table('appointments')
     result = table.scan(FilterExpression={'date':today,'doc_id':email}).values()
     return render(request,'appointments/dashboard.html',{'app' : result['Items']})
