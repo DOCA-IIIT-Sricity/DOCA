@@ -5,7 +5,7 @@ from accounts.decorators import isDoctor
 from mongodb.mongolib import Table
 import numpy
 from accounts.decorators import getEmail
-import datetime import date
+from datetime import date
 import calendar
 import requests
 from faker import Faker
