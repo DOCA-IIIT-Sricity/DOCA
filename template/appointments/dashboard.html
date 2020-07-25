@@ -191,65 +191,19 @@
     <div class="container m-t-100">
 
         <br><br>
-        <h3 class="main-heading">Book an Appointment for in-clinic Consultation</h3>
-        <h5 class="subtitle">Find experienced doctors across all specialties</h5>
-
-        <div class="items">
-            <div>
-                <div class="u-margin--10__left u-margin--10__right outline-none" tabindex="-1" style="width:100%;display:inline-block">
-                    <div class="card card--280">
-                        <div class="card__img--280x200"><a href="/jaipur/dentist?utm_source=consumer-home&amp;utm_medium=dweb"><span class="LazyLoad is-visible"><img alt="Dentist" class="card__img" style="background-color: rgb(215, 216, 226);" src="https://www.practostatic.com/consumer-home/desktop/images/1558283618/sp-dentist@2x.jpg"></span></a></div>
-                        <div class="u-margin--12__top">
-                            <h6 class="u-font--16 u-margin--0 u-font--bold card__header">Dentist</h6>
+        <h3 class="main-heading">Your Appointments for Today</h3>
+        <!-- <h5 class="subtitle">Find experienced doctors across all specialties</h5> -->
+        <div class="items row" style="overflow-x:auto">
+            {% for a in app %}
+            <div style="width:25%;padding-bottom:15px">
+                    <div class="u-margin--10__left u-margin--10__right outline-none col" tabindex="-1" style="width:100%;display:inline-block">
+                        <div class="card card--280">
+                            <span style="padding-bottom: 20px;"><span style="padding-left:10px;padding-right:80px;">{{app.pat_id}}</span><span>{{app.start_time}}</span><span>{{app.end_time}}</span></span>
+                            <div style="padding-left:30px;" ><a href="{% url 'prescription:index' %}?name={{ a.app_id }}&start={{a.start}}"><button class="btn btn-primary">prescribe medicine</button></a></div>
                         </div>
-                        <div class="u-t-c--black_1 u-font--14">Teething troubles? Schedule a dental checkup</div>
                     </div>
-                </div>
             </div>
-            <div>
-                <div class="u-margin--10__left u-margin--10__right outline-none" tabindex="-1" style="width:100%;display:inline-block">
-                    <div class="card card--280">
-                        <div class="card__img--280x200"><a href="/jaipur/dentist?utm_source=consumer-home&amp;utm_medium=dweb"><span class="LazyLoad is-visible"><img alt="Dentist" class="card__img" style="background-color: rgb(215, 216, 226);" src="https://www.practostatic.com/consumer-home/desktop/images/1558283618/sp-dentist@2x.jpg"></span></a></div>
-                        <div class="u-margin--12__top">
-                            <h6 class="u-font--16 u-margin--0 u-font--bold card__header">Dentist</h6>
-                        </div>
-                        <div class="u-t-c--black_1 u-font--14">Teething troubles? Schedule a dental checkup</div>
-                    </div>
-                </div>
-            </div>
-            <div>
-                <div class="u-margin--10__left u-margin--10__right outline-none" tabindex="-1" style="width:100%;display:inline-block">
-                    <div class="card card--280">
-                        <div class="card__img--280x200"><a href="/jaipur/dentist?utm_source=consumer-home&amp;utm_medium=dweb"><span class="LazyLoad is-visible"><img alt="Dentist" class="card__img" style="background-color: rgb(215, 216, 226);" src="https://www.practostatic.com/consumer-home/desktop/images/1558283618/sp-dentist@2x.jpg"></span></a></div>
-                        <div class="u-margin--12__top">
-                            <h6 class="u-font--16 u-margin--0 u-font--bold card__header">Dentist</h6>
-                        </div>
-                        <div class="u-t-c--black_1 u-font--14">Teething troubles? Schedule a dental checkup</div>
-                    </div>
-                </div>
-            </div>
-            <div>
-                <div class="u-margin--10__left u-margin--10__right outline-none" tabindex="-1" style="width:100%;display:inline-block">
-                    <div class="card card--280">
-                        <div class="card__img--280x200"><a href="/jaipur/dentist?utm_source=consumer-home&amp;utm_medium=dweb"><span class="LazyLoad is-visible"><img alt="Dentist" class="card__img" style="background-color: rgb(215, 216, 226);" src="https://www.practostatic.com/consumer-home/desktop/images/1558283618/sp-dentist@2x.jpg"></span></a></div>
-                        <div class="u-margin--12__top">
-                            <h6 class="u-font--16 u-margin--0 u-font--bold card__header">Dentist</h6>
-                        </div>
-                        <div class="u-t-c--black_1 u-font--14">Teething troubles? Schedule a dental checkup</div>
-                    </div>
-                </div>
-            </div>
-            <div>
-                <div class="u-margin--10__left u-margin--10__right outline-none" tabindex="-1" style="width:100%;display:inline-block">
-                    <div class="card card--280">
-                        <div class="card__img--280x200"><a href="/jaipur/dentist?utm_source=consumer-home&amp;utm_medium=dweb"><span class="LazyLoad is-visible"><img alt="Dentist" class="card__img" style="background-color: rgb(215, 216, 226);" src="https://www.practostatic.com/consumer-home/desktop/images/1558283618/sp-dentist@2x.jpg"></span></a></div>
-                        <div class="u-margin--12__top">
-                            <h6 class="u-font--16 u-margin--0 u-font--bold card__header">Dentist</h6>
-                        </div>
-                        <div class="u-t-c--black_1 u-font--14">Teething troubles? Schedule a dental checkup</div>
-                    </div>
-                </div>
-            </div>
+            {% endfor %}
         </div>
 
     </div>
@@ -326,14 +280,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
   <script>
-    $(document).ready(function() {
-
-        $('.items').slick({
-            infinite: false,
-            slidesToShow: 4,
-            slidesToScroll: 4
-        });
-    });
 </script>
 
 </html>

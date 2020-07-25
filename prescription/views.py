@@ -13,21 +13,25 @@ def listToString(s):
 
     return str1
 
+app_id = ""
 
 def index(request):
+    appointment_id = print(request.GET.get('app_id'))
     if request.method == "POST":
         table = Table('pres_table')
         notes = request.POST['dis_notes']
         symptoms = request.POST['pres_symp']
         medicine = request.POST['pres_med']
+        name = request.POST['name']
+        age = request.POST['age']
+        sex = request.POST['sex']
+        print(name,age,sex)
         symptoms = listToString(symptoms)
-        p_id = 1
-        u_id = 'user_00'
-        appoint_id = 'appoint_00'
         table.insertValues(values=[
             {
-                'prescription_id' : p_id,
-                'user_id' : u_id,
+                'name' : name,
+                'age' : age,
+                'sex':sex,
                 'app_id' : appoint_id,
                 'symptoms' : symptoms,
                 'notes' : notes,
@@ -35,7 +39,7 @@ def index(request):
             }]
         )
         print('put done')
-        return render(request,'prescription/1.html')
+        return render(request,'appointments/dashboard.html')
     return render(request,'prescription/mainpage.html')
 
 
