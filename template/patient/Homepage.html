@@ -110,6 +110,84 @@
         .u-font--14 {
             font-size: 14;
         }
+        
+        .card1 {
+            background-color: white;
+            opacity: unset;
+            border: 1px solid gray;
+            border-radius: 20px;
+            padding-bottom: 16px;
+            margin-bottom: 16px;
+            margin-top: 16px;
+        }
+        
+        .doc_info_section {
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .doctor-name {
+            color: blue;
+            font-size: 20px;
+            line-height: 30px;
+        }
+        
+        .doctor_spec {
+            color: grey;
+            font-size: 14px;
+        }
+        
+        .doctor_loc {
+            color: black;
+            font-size: 16px;
+        }
+        
+        .uv2-cushion--lg-top {
+            padding-top: 16px;
+        }
+        
+        .uv2-spacer--md-top {
+            margin-top: 12px;
+        }
+        
+        .u-border-general-dashed-top--gray-10 {
+            border-top: 1px dashed #e8e8f0;
+        }
+        
+        .doc_fee {
+            color: black;
+            font-size: 16px;
+            margin-left: 8px;
+            font-weight: 700;
+        }
+        
+        .o-label--success {
+            background: #00a500;
+            color: #fff;
+            display: inline-block;
+            padding: 4px 8px;
+            font-size: 12px;
+            line-height: 1;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: .25em;
+            max-width: 100%;
+        }
+        
+        .book_btn {
+            background-color: white;
+            color: blue;
+            padding: 8px;
+            border: 1px solid blue;
+            border-radius: 8px;
+            margin-top: 8px;
+        }
+        
+        .book_btn:hover {
+            background-color: blue;
+            color: white;
+            border: 1px solid white;
+        }
     </style>
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic|Roboto+Mono:400,500|Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="../../static/css/all.min.css">
@@ -162,7 +240,7 @@
                                         </a>
                                     </div>
                                     <div class="product-tab">
-                                        <a class="nav-interact" event="Nav:Interacted:Book diagnostic tests" href="/appointments/manage/" title="tests">
+                                        <a class="nav-interact" event="Nav:Interacted:Book diagnostic tests" href="/book/manage/" title="tests">
                                             <div class="product-tab__title">Appointment</div>
                                             <div class="product-tab__subtitle">Manage your appointments</div>
                                         </a>
@@ -175,7 +253,7 @@
                         <div class="nav-right text-right">
                             <div class="nav-items">
                                 <span>
-                                <a href="www.google.com" class="btn-border nav-login nav-interact ">Logout</a>
+                                <a href="/accounts/logout/" class="btn-border nav-login nav-interact ">Logout</a>
                             </span>
                             </div>
                         </div>
@@ -264,19 +342,19 @@
     <div class="container">
         <h3 class="main-heading">Upcoming Appointement</h3>
         <h5 class="subtitle">Never miss your appointement</h5>
-        <div style="height: 200px; width:100%">
+        <div style="width:100%">
             {% for x in appointements%}
-            <div class="col-3">
+            <div class="col-6">
                 <div class="row card1">
                     <div class="col-3">
-                        <img width="150px" src="https://previews.123rf.com/images/inegvin/inegvin1711/inegvin171100010/89549889-doctor-web-icon-head-physician-medical-avatar-in-flat-style-illustration.jpg" alt="Avatar" style="border-radius: 50%; margin-top: 50px;margin-bottom: 50px;">
+                        <img width="100px" src="https://previews.123rf.com/images/inegvin/inegvin1711/inegvin171100010/89549889-doctor-web-icon-head-physician-medical-avatar-in-flat-style-illustration.jpg" alt="Avatar" style="border-radius: 50%; margin-top: 50px;margin-bottom: 50px;">
                     </div>
                     <div class="col-5" style="padding-top:20px;">
                         <div class="doc_info_section">
-                            <div class="row doctor-name">Dr. {{x.doc.first_name}} {{x.doc.last_name}}</div>
-                            <div class="row doctor_spec">{{x.doc.spec}}</div>
+                            <div class="row doctor-name">Dr. {{x.doctor.first_name}} {{x.doctor.last_name}}</div>
+                            <div class="row doctor_spec">{{x.doctor.spec}}</div>
                             <div class="row doctor_spec">{{x.doc.experience}}</div>
-                            <div class="row doctor_loc">{{x.doc.address}},{{x.doc.city}}</div>
+                            <div class="row doctor_loc">{{x.doctor.address}},{{x.doctor.city}}</div>
                         </div>
                     </div>
                     <div class="col-4">
@@ -293,20 +371,20 @@
                                 <span>{{x.date}}</span>
                             </div>
                             <div class="row">
-                                <button class="btn-toolbar book_btn">Continue to payment</button>
+                                <button class="btn-toolbar book_btn">manage</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {%endfor%} {%if appointments is null %}
+            {%endfor%} {%if appointements is null %}
             <div style="margin-top:75px">No result found</div>
             {%endif%}
         </div>
     </div>
 
-
+    <br><br>
 
 
     <section class="testimonials section-padding">

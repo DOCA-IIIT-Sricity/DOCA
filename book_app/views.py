@@ -4,6 +4,16 @@ from mongodb.mongolib import Table
 from datetime import datetime
 
 @isDoctor(0)
+def Appointemets(request):
+    uid=getEmail(request.session['session_key'])
+    table = Table('appointments')
+    appointments = table.scan(FilterExpression={'user_id':uid}).values()
+    rdict={}
+    if appointments['Count']!=0:
+        rdict={'appointements':appointments['Items']}
+    return render(request,'book_appointement/pat_Appointement.html',rdict)
+
+@isDoctor(0)
 def SearchDoctor(request):
     
     if "spec" in request.GET and "city" in request.GET and 'date' in request.GET:
